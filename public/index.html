@@ -1,0 +1,1299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Instagram Video Call — Secure & Encrypted by ToxicLabs</title>
+<meta name="description" content="End-to-end encrypted video calls powered by Instagram identity. No downloads. No ads. Just private calls.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📷</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="/socket.io/socket.io.js"></script>
+<style>
+:root{
+  --ig:linear-gradient(45deg,#f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);
+  --ig1:#833ab4;--ig2:#e1306c;--ig3:#fcb045;
+  --blue:#0095f6;--blue2:#1877f2;
+  --green:#00ba88;--red:#ed4956;--orange:#f97316;
+  --bg:#f8f8f8;--white:#fff;
+  --border:#e5e5e5;--border2:#dbdbdb;
+  --text:#1a1a1a;--text2:#525252;--muted:#a3a3a3;
+  --shadow:0 1px 3px rgba(0,0,0,.08),0 4px 16px rgba(0,0,0,.04);
+  --shadow-lg:0 8px 32px rgba(0,0,0,.1),0 2px 8px rgba(0,0,0,.06);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;font-size:14px}
+
+/* ── HEADER ── */
+.hdr{
+  position:sticky;top:0;z-index:100;height:58px;
+  background:rgba(255,255,255,.95);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;padding:0 24px;
+}
+.hdr-logo{display:flex;align-items:center;gap:10px;cursor:pointer;text-decoration:none}
+.hdr-logo-icon{
+  width:34px;height:34px;border-radius:10px;
+  background:var(--ig);display:flex;align-items:center;justify-content:center;
+  font-size:18px;flex-shrink:0;box-shadow:0 2px 8px rgba(131,58,180,.3);
+}
+.hdr-logo-text{font-size:16px;font-weight:800;letter-spacing:-.4px;color:var(--text)}
+.hdr-logo-sub{font-size:10px;font-weight:600;color:var(--muted);letter-spacing:.3px;margin-top:-1px}
+.hdr-nav{display:flex;align-items:center;gap:8px}
+.hdr-nav a{font-size:13px;font-weight:600;color:var(--text2);text-decoration:none;padding:6px 12px;border-radius:8px;transition:.15s;cursor:pointer}
+.hdr-nav a:hover{background:#f0f0f0;color:var(--text)}
+.hdr-user{display:none;align-items:center;gap:10px}
+.hdr-user-av{width:32px;height:32px;border-radius:50%;background:var(--ig);display:flex;align-items:center;justify-content:center;font-size:15px;cursor:pointer;flex-shrink:0}
+.hdr-user-name{font-size:13px;font-weight:700;color:var(--text);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.btn{font-family:'Inter',sans-serif;cursor:pointer;border:none;transition:.2s;display:inline-flex;align-items:center;gap:6px;font-weight:700;border-radius:10px;padding:8px 18px;font-size:13px}
+.btn-ig{background:var(--ig);color:#fff;box-shadow:0 2px 10px rgba(131,58,180,.25)}
+.btn-ig:hover{opacity:.9;transform:translateY(-1px);box-shadow:0 4px 18px rgba(131,58,180,.35)}
+.btn-ghost{background:transparent;color:var(--text2);border:1.5px solid var(--border2)}
+.btn-ghost:hover{border-color:#aaa;background:#fafafa}
+
+/* ── PAGE SECTIONS ── */
+.page{display:none}
+.page.active{display:block}
+
+/* ── HERO ── */
+.hero{
+  min-height:calc(100vh - 58px);
+  display:flex;align-items:center;justify-content:center;
+  padding:60px 20px;
+  background:linear-gradient(160deg,#fff 0%,#fdf4ff 40%,#f0f9ff 100%);
+  position:relative;overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;top:-200px;right:-200px;
+  width:600px;height:600px;border-radius:50%;
+  background:radial-gradient(circle,rgba(131,58,180,.06) 0%,transparent 70%);
+  pointer-events:none;
+}
+.hero::after{
+  content:'';position:absolute;bottom:-150px;left:-150px;
+  width:500px;height:500px;border-radius:50%;
+  background:radial-gradient(circle,rgba(0,149,246,.05) 0%,transparent 70%);
+  pointer-events:none;
+}
+.hero-inner{max-width:680px;text-align:center;position:relative;z-index:1}
+.hero-brand{
+  display:inline-flex;align-items:center;gap:10px;
+  background:#fff;border:1px solid var(--border);
+  padding:8px 16px 8px 10px;border-radius:100px;
+  box-shadow:var(--shadow);margin-bottom:36px;
+}
+.hero-brand-icon{width:28px;height:28px;border-radius:8px;background:var(--ig);display:flex;align-items:center;justify-content:center;font-size:14px}
+.hero-brand-text{font-size:12px;font-weight:700;color:var(--text)}
+.hero-brand-dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 0 2px rgba(0,186,136,.2);animation:bdot 2s infinite}
+@keyframes bdot{0%,100%{opacity:1}50%{opacity:.4}}
+.hero h1{
+  font-size:clamp(32px,6vw,56px);font-weight:900;
+  line-height:1.08;letter-spacing:-2px;margin-bottom:20px;color:var(--text);
+}
+.hero h1 .gr{
+  background:var(--ig);-webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;background-clip:text;
+}
+.hero-desc{font-size:16px;color:var(--text2);line-height:1.7;max-width:500px;margin:0 auto 40px;font-weight:500}
+.hero-cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:56px}
+.btn-hero{padding:14px 32px;font-size:15px;border-radius:14px}
+.hero-trust{display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap}
+.trust-item{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--muted)}
+.trust-icon{font-size:15px}
+
+/* ── FEATURE STRIP ── */
+.fstrip{background:#fff;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.fstrip-inner{max-width:960px;margin:0 auto;display:flex;overflow-x:auto;gap:0}
+.fstrip-item{display:flex;align-items:center;gap:8px;padding:14px 28px;font-size:12px;font-weight:700;color:var(--text2);border-right:1px solid var(--border);white-space:nowrap;flex-shrink:0}
+.fstrip-item:last-child{border-right:none}
+.fstrip-item span{font-size:16px}
+
+/* ── FEATURES ── */
+.features{padding:80px 20px;background:var(--bg)}
+.sec-inner{max-width:960px;margin:0 auto}
+.sec-label{font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;background:var(--ig);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:10px;display:block}
+.sec-h{font-size:clamp(24px,4vw,36px);font-weight:900;letter-spacing:-1px;color:var(--text);margin-bottom:52px;line-height:1.15}
+.feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.feat-card{background:#fff;border:1px solid var(--border);border-radius:20px;padding:28px;transition:.25s;cursor:default}
+.feat-card:hover{border-color:rgba(131,58,180,.2);transform:translateY(-3px);box-shadow:var(--shadow-lg)}
+.feat-icon{
+  width:48px;height:48px;border-radius:14px;margin-bottom:18px;
+  display:flex;align-items:center;justify-content:center;font-size:24px;
+}
+.fi-ig{background:linear-gradient(135deg,rgba(131,58,180,.12),rgba(252,176,69,.08))}
+.fi-bl{background:rgba(0,149,246,.08)}
+.fi-gr{background:rgba(0,186,136,.08)}
+.fi-rd{background:rgba(237,73,86,.08)}
+.fi-or{background:rgba(249,115,22,.08)}
+.fi-pu{background:rgba(139,92,246,.08)}
+.feat-card h3{font-size:15px;font-weight:800;margin-bottom:8px;color:var(--text)}
+.feat-card p{font-size:13px;color:var(--text2);line-height:1.65;font-weight:500}
+
+/* ── HOW IT WORKS ── */
+.how{padding:80px 20px;background:#fff;border-top:1px solid var(--border)}
+.how-inner{max-width:680px;margin:0 auto}
+.steps{margin-top:44px;display:flex;flex-direction:column;gap:0}
+.step{display:flex;gap:20px;padding-bottom:36px;position:relative}
+.step:last-child{padding-bottom:0}
+.step-left{display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:40px}
+.step-num{width:40px;height:40px;border-radius:50%;background:var(--ig);color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;flex-shrink:0;box-shadow:0 2px 12px rgba(131,58,180,.25)}
+.step-line{width:2px;flex:1;background:linear-gradient(180deg,rgba(131,58,180,.25),transparent);margin-top:8px;min-height:24px}
+.step:last-child .step-line{display:none}
+.step-body{padding-top:8px;flex:1}
+.step-body h4{font-size:15px;font-weight:800;margin-bottom:6px;color:var(--text)}
+.step-body p{font-size:13px;color:var(--text2);line-height:1.65;font-weight:500}
+.step-code{display:inline-block;font-family:'Courier New',monospace;font-size:11px;background:rgba(131,58,180,.08);color:var(--ig1);padding:3px 8px;border-radius:5px;margin-top:4px}
+
+/* ── INVITE DEMO ── */
+.demo-sec{padding:80px 20px;background:var(--bg)}
+.demo-card{
+  max-width:500px;margin:0 auto;
+  background:#fff;border:1px solid var(--border);border-radius:24px;
+  overflow:hidden;box-shadow:var(--shadow-lg);
+}
+.demo-card-top{background:var(--ig);padding:24px;display:flex;align-items:center;gap:14px}
+.demo-av{width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.25);border:2px solid rgba(255,255,255,.5);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
+.demo-info h3{font-size:16px;font-weight:800;color:#fff}
+.demo-info p{font-size:12px;color:rgba(255,255,255,.75);margin-top:2px;font-weight:500}
+.demo-body{padding:24px}
+.demo-url-box{background:#fafafa;border:1.5px solid var(--border);border-radius:12px;padding:14px;margin-bottom:14px}
+.demo-url-label{font-size:10px;font-weight:800;color:var(--muted);letter-spacing:.8px;text-transform:uppercase;margin-bottom:6px}
+.demo-url-val{font-family:'Courier New',monospace;font-size:12px;color:var(--ig1);font-weight:700;word-break:break-all;margin-bottom:10px}
+.demo-copy{display:flex;gap:8px}
+.dcopy-btn{flex:1;padding:9px;border-radius:9px;border:none;font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:.2s}
+.dcopy-copy{background:var(--ig);color:#fff}
+.dcopy-copy:hover{opacity:.9}
+.dcopy-share{background:#f0f0f0;color:var(--text);border:1px solid var(--border)}
+.dcopy-share:hover{background:#e5e5e5}
+.demo-notif{background:linear-gradient(135deg,rgba(131,58,180,.05),rgba(252,176,69,.03));border:1px solid rgba(131,58,180,.12);border-radius:12px;padding:14px;display:flex;gap:10px;align-items:flex-start}
+.notif-icon{font-size:20px;flex-shrink:0;margin-top:1px}
+.notif-body p{font-size:13px;color:var(--text);line-height:1.5;font-weight:500}
+.notif-body strong{font-weight:800;color:var(--ig1)}
+.notif-body small{font-size:11px;color:var(--muted);display:block;margin-top:4px;font-weight:500}
+
+/* ── STATS ── */
+.stats{padding:60px 20px;background:var(--ig)}
+.stats-inner{max-width:720px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:center}
+.stat{flex:1;min-width:130px;text-align:center;padding:20px 16px;border-right:1px solid rgba(255,255,255,.2)}
+.stat:last-child{border-right:none}
+.stat-n{font-size:2.4rem;font-weight:900;color:#fff;letter-spacing:-1px;line-height:1}
+.stat-l{font-size:11px;color:rgba(255,255,255,.65);margin-top:6px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+
+/* ── FOOTER ── */
+footer{background:#fff;border-top:1px solid var(--border);padding:52px 24px 32px}
+.footer-grid{max-width:960px;margin:0 auto;display:flex;flex-wrap:wrap;gap:48px;justify-content:space-between;margin-bottom:40px}
+.footer-brand p{font-size:12px;color:var(--muted);line-height:1.7;font-weight:500;max-width:220px;margin-top:12px}
+.footer-col h5{font-size:11px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--text2);margin-bottom:14px}
+.footer-col a{display:block;font-size:13px;color:var(--muted);text-decoration:none;margin-bottom:9px;font-weight:500;transition:.15s}
+.footer-col a:hover{color:var(--text)}
+.footer-bottom{max-width:960px;margin:0 auto;display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center;padding-top:24px;border-top:1px solid var(--border)}
+.footer-bottom p{font-size:11px;color:var(--muted);font-weight:600}
+.footer-socials{display:flex;gap:8px}
+.fsoc{width:32px;height:32px;border-radius:8px;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;text-decoration:none;transition:.2s}
+.fsoc:hover{background:var(--ig);border:none;transform:scale(1.08)}
+
+/* ═══ MODALS ═══ */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(10px);z-index:500;display:none;align-items:center;justify-content:center;padding:16px}
+.ov.on{display:flex}
+.modal{background:#fff;border-radius:24px;width:100%;max-width:400px;box-shadow:0 24px 80px rgba(0,0,0,.18);animation:mPop .22s cubic-bezier(.34,1.56,.64,1);overflow:hidden;position:relative}
+@keyframes mPop{from{transform:scale(.9) translateY(10px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
+.modal-hd{background:var(--ig);padding:28px 24px 24px;text-align:center;position:relative}
+.modal-hd-icon{width:56px;height:56px;background:rgba(255,255,255,.2);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 14px;border:1.5px solid rgba(255,255,255,.3)}
+.modal-hd h2{font-size:20px;font-weight:900;color:#fff;letter-spacing:-.4px}
+.modal-hd p{font-size:13px;color:rgba(255,255,255,.75);margin-top:4px;font-weight:500}
+.modal-x{position:absolute;top:12px;right:12px;background:rgba(255,255,255,.2);border:none;border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:13px;color:#fff;display:flex;align-items:center;justify-content:center;transition:.15s}
+.modal-x:hover{background:rgba(255,255,255,.35)}
+.modal-body{padding:24px}
+
+/* form elements */
+.fgroup{margin-bottom:14px}
+.fgroup label{display:block;font-size:11px;font-weight:800;color:var(--text2);margin-bottom:5px;letter-spacing:.3px;text-transform:uppercase}
+.fgroup input{
+  width:100%;background:#fafafa;border:1.5px solid var(--border2);
+  border-radius:11px;padding:11px 14px;
+  color:var(--text);font-size:14px;font-family:'Inter',sans-serif;
+  outline:none;font-weight:500;transition:.2s;
+}
+.fgroup input:focus{border-color:var(--ig1);background:#fff;box-shadow:0 0 0 3px rgba(131,58,180,.1)}
+.fgroup input.error{border-color:var(--red);background:#fff5f5}
+.fgroup .err-msg{font-size:11px;color:var(--red);font-weight:600;margin-top:4px;display:none}
+.fgroup.has-error .err-msg{display:block}
+.fgroup.has-error input{border-color:var(--red)}
+
+.btn-ig-auth{
+  width:100%;padding:13px;border-radius:12px;background:var(--ig);
+  color:#fff;border:none;font-size:14px;font-weight:800;cursor:pointer;
+  font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center;
+  gap:10px;transition:.2s;box-shadow:0 4px 16px rgba(131,58,180,.25);margin-bottom:6px;
+}
+.btn-ig-auth:hover{opacity:.9;transform:translateY(-1px)}
+.ig-auth-icon{width:22px;height:22px;border-radius:6px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:13px}
+
+.divider{display:flex;align-items:center;gap:10px;margin:16px 0;color:var(--muted);font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+
+.btn-form{width:100%;padding:12px;border-radius:11px;border:none;background:var(--text);color:#fff;font-size:14px;font-weight:800;cursor:pointer;font-family:'Inter',sans-serif;transition:.2s;margin-top:4px}
+.btn-form:hover{background:#333;transform:translateY(-1px)}
+.btn-form:disabled{opacity:.5;cursor:not-allowed;transform:none}
+
+.m-switch{text-align:center;font-size:12px;color:var(--muted);margin-top:16px;font-weight:600}
+.m-switch a{background:var(--ig);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;cursor:pointer;font-weight:800}
+
+/* OTP input */
+.otp-inputs{display:flex;gap:10px;justify-content:center;margin:20px 0}
+.otp-digit{
+  width:48px;height:56px;border-radius:12px;border:1.5px solid var(--border2);
+  background:#fafafa;text-align:center;font-size:22px;font-weight:800;
+  color:var(--text);font-family:'Inter',sans-serif;outline:none;transition:.2s;
+}
+.otp-digit:focus{border-color:var(--ig1);background:#fff;box-shadow:0 0 0 3px rgba(131,58,180,.1)}
+.otp-digit.filled{border-color:var(--ig1);background:#fff}
+.otp-resend{text-align:center;font-size:12px;color:var(--muted);margin-top:6px;font-weight:600}
+.otp-resend a{background:var(--ig);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;cursor:pointer;font-weight:800}
+.otp-timer{color:var(--muted);font-weight:700}
+
+/* dashboard modal */
+.dash-user{
+  display:flex;align-items:center;gap:12px;
+  background:#fafafa;border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:18px;
+}
+.dash-av{width:44px;height:44px;border-radius:50%;background:var(--ig);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.dash-info strong{font-size:14px;font-weight:800;display:block;color:var(--text)}
+.dash-info span{font-size:11px;color:var(--muted);font-weight:600}
+.dash-badge{margin-left:auto;background:rgba(0,186,136,.1);color:var(--green);border:1px solid rgba(0,186,136,.2);font-size:10px;font-weight:800;padding:3px 8px;border-radius:6px;white-space:nowrap}
+.link-panel{background:rgba(131,58,180,.04);border:1.5px solid rgba(131,58,180,.15);border-radius:14px;padding:16px;margin-bottom:16px}
+.link-panel-label{font-size:10px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;background:var(--ig);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px;display:block}
+.link-val{font-family:'Courier New',monospace;font-size:12px;color:var(--text);font-weight:700;word-break:break-all;margin-bottom:10px;line-height:1.5}
+.link-btns{display:flex;gap:8px}
+.lbtn{flex:1;padding:8px 12px;border-radius:9px;border:none;font-size:12px;font-weight:800;cursor:pointer;font-family:'Inter',sans-serif;transition:.2s;display:flex;align-items:center;justify-content:center;gap:5px}
+.lbtn-copy{background:var(--ig);color:#fff}
+.lbtn-copy:hover{opacity:.9}
+.lbtn-share{background:#f0f0f0;color:var(--text);border:1px solid var(--border)}
+.lbtn-share:hover{background:#e5e5e5}
+.btn-start{width:100%;padding:13px;border-radius:12px;border:none;background:var(--text);color:#fff;font-size:14px;font-weight:800;cursor:pointer;font-family:'Inter',sans-serif;transition:.2s;margin-bottom:12px;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-start:hover{background:#333;transform:translateY(-1px)}
+.join-row{display:flex;gap:8px}
+.join-row input{flex:1;background:#fafafa;border:1.5px solid var(--border2);border-radius:10px;padding:10px 12px;font-size:13px;font-family:'Inter',sans-serif;color:var(--text);outline:none;font-weight:600;transition:.2s;letter-spacing:1.5px;text-transform:uppercase}
+.join-row input:focus{border-color:var(--blue);background:#fff}
+.join-row button{background:var(--blue);color:#fff;border:none;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:800;cursor:pointer;font-family:'Inter',sans-serif;transition:.2s;white-space:nowrap}
+.join-row button:hover{background:#0086e0}
+
+/* join invite modal */
+.join-invite-top{text-align:center;padding:8px 0 16px}
+.ji-av{width:60px;height:60px;border-radius:50%;background:var(--ig);display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 12px;border:3px solid rgba(131,58,180,.2);box-shadow:0 4px 16px rgba(131,58,180,.25)}
+.ji-from{font-size:18px;font-weight:900;color:var(--text);letter-spacing:-.3px}
+.ji-sub{font-size:13px;color:var(--text2);font-weight:500;margin-top:4px}
+.ji-room{display:inline-flex;align-items:center;gap:6px;background:#fafafa;border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;color:var(--muted);margin-top:10px;font-family:'Courier New',monospace}
+.security-note{display:flex;gap:8px;align-items:flex-start;background:rgba(0,186,136,.06);border:1px solid rgba(0,186,136,.15);border-radius:10px;padding:11px 13px;margin-bottom:16px;font-size:12px;color:var(--text2);font-weight:500;line-height:1.5}
+
+/* ── ROOM VIEW ── */
+.room-view{display:none;position:fixed;inset:0;z-index:300;flex-direction:column;background:#fff}
+.room-view.on{display:flex}
+/* room header */
+.room-hdr{height:56px;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 20px;flex-shrink:0}
+.room-hdr-l{display:flex;align-items:center;gap:10px}
+.room-hdr-icon{width:32px;height:32px;border-radius:9px;background:var(--ig);display:flex;align-items:center;justify-content:center;font-size:16px}
+.room-hdr-info strong{font-size:14px;font-weight:800;color:var(--text);display:block;line-height:1.2}
+.room-hdr-info span{font-size:11px;color:var(--muted);font-weight:600}
+.room-live{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:800;color:var(--red);background:rgba(237,73,86,.08);border:1px solid rgba(237,73,86,.15);border-radius:7px;padding:4px 10px}
+.rld{width:6px;height:6px;border-radius:50%;background:var(--red);animation:rp 1.5s infinite}
+@keyframes rp{0%,100%{opacity:1}50%{opacity:.2}}
+
+/* video grid */
+.v-grid{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px;background:#f0f0f0;overflow:hidden}
+.v-tile{
+  background:#fff;border-radius:16px;border:1px solid var(--border);
+  position:relative;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;overflow:hidden;min-height:120px;
+}
+.v-tile video{width:100%;height:100%;object-fit:cover;display:none}
+.v-tile.cam-on video{display:block}
+.v-tile.cam-on .v-placeholder{display:none}
+.v-placeholder{display:flex;flex-direction:column;align-items:center;gap:8px}
+.v-ph-av{
+  width:64px;height:64px;border-radius:50%;background:var(--ig);
+  display:flex;align-items:center;justify-content:center;
+  font-size:28px;color:#fff;font-weight:800;
+  box-shadow:0 4px 16px rgba(131,58,180,.3);
+}
+.v-ph-name{font-size:12px;font-weight:700;color:var(--text2)}
+.v-tile-label{
+  position:absolute;bottom:8px;left:10px;
+  background:rgba(0,0,0,.5);color:#fff;
+  font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px;
+  display:flex;align-items:center;gap:5px;backdrop-filter:blur(4px);
+}
+.muted-ic{color:#ff6b6b;font-size:10px}
+.v-tile-waiting{text-align:center;padding:16px}
+.v-tile-waiting p{font-size:12px;color:var(--muted);font-weight:500;margin-top:6px;line-height:1.5}
+.v-invite-link{
+  margin-top:10px;padding:7px 14px;border-radius:8px;
+  background:var(--ig);color:#fff;border:none;
+  font-size:11px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:.2s;
+}
+.v-invite-link:hover{opacity:.9}
+
+/* controls bar */
+.ctrl-bar{
+  height:80px;background:#fff;border-top:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;gap:14px;flex-shrink:0;
+}
+.ctrl-item{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer}
+.ctrl-circle{
+  width:46px;height:46px;border-radius:50%;border:1.5px solid var(--border);
+  background:#fff;display:flex;align-items:center;justify-content:center;
+  font-size:18px;transition:.2s;cursor:pointer;
+}
+.ctrl-circle:hover{background:#f5f5f5;transform:scale(1.08)}
+.ctrl-circle.muted-state{background:#fff0f0;border-color:rgba(237,73,86,.3)}
+.ctrl-circle.off-state{background:#fff0f0;border-color:rgba(237,73,86,.3)}
+.ctrl-circle.end-call{background:var(--red);border-color:var(--red);font-size:16px}
+.ctrl-circle.end-call:hover{background:#d6303c;transform:scale(1.08)}
+.ctrl-lbl{font-size:10px;font-weight:700;color:var(--muted)}
+
+/* ── TOAST ── */
+.toast{
+  position:fixed;bottom:24px;left:50%;
+  transform:translateX(-50%) translateY(70px);
+  background:rgba(26,26,26,.95);color:#fff;border-radius:12px;
+  padding:11px 22px;font-size:13px;font-weight:700;
+  z-index:9999;transition:.3s cubic-bezier(.34,1.56,.64,1);
+  opacity:0;pointer-events:none;white-space:nowrap;
+  box-shadow:0 8px 24px rgba(0,0,0,.2);
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.ok{background:var(--green)}
+.toast.err{background:var(--red)}
+.toast.warn{background:var(--orange)}
+
+/* ── LOADING SPINNER ── */
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+@media(max-width:600px){
+  .hdr-nav a:not(.btn-ig){display:none}
+  .hero h1{letter-spacing:-1.5px}
+  .v-grid{grid-template-columns:1fr}
+  .stats-inner{flex-direction:column}
+  .stat{border-right:none;border-bottom:1px solid rgba(255,255,255,.2)}
+  .stat:last-child{border-bottom:none}
+  footer{padding:40px 16px 28px}
+  .footer-grid{gap:28px}
+  .otp-digit{width:42px;height:50px;font-size:20px}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ HEADER ══ -->
+<header class="hdr">
+  <a class="hdr-logo" onclick="goHome()">
+    <div class="hdr-logo-icon">📷</div>
+    <div>
+      <div class="hdr-logo-text">Instagram</div>
+      <div class="hdr-logo-sub">Secure Video Calls · E2E</div>
+    </div>
+  </a>
+  <nav class="hdr-nav" id="hdr-nav-guest">
+    <a onclick="scrollTo('#features')">Features</a>
+    <a onclick="scrollTo('#how')">How it works</a>
+    <button class="btn btn-ghost" onclick="openOv('login');showForm('login')">Log In</button>
+    <button class="btn btn-ig" onclick="openOv('login');showForm('reg')">Sign Up Free</button>
+  </nav>
+  <div class="hdr-user" id="hdr-user">
+    <button class="btn btn-ig" onclick="openOv('dash')" style="padding:7px 16px;font-size:12px">⚡ My Room</button>
+    <div class="hdr-user-av" onclick="openOv('dash')" id="hdr-av">👤</div>
+    <div class="hdr-user-name" id="hdr-name">User</div>
+  </div>
+</header>
+
+<!-- ══ HOME PAGE ══ -->
+<div class="page active" id="page-home">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-brand">
+        <div class="hero-brand-icon">📷</div>
+        <span class="hero-brand-text">ToxicLabs · Instagram Video Call</span>
+        <div class="hero-brand-dot"></div>
+      </div>
+      <h1>Secure Video Calls<br>Built on <span class="gr">Instagram Identity</span></h1>
+      <p class="hero-desc">Create a private room, share your invite link, and connect face-to-face — fully encrypted, no downloads, no nonsense.</p>
+      <div class="hero-cta">
+        <button class="btn btn-ig btn-hero" onclick="openOv('login');showForm('reg')">
+          📷 Start a Free Call
+        </button>
+        <button class="btn btn-ghost btn-hero" onclick="openOv('login');showForm('login')">
+          Log In
+        </button>
+      </div>
+      <div class="hero-trust">
+        <div class="trust-item"><span class="trust-icon">🔒</span> End-to-End Encrypted</div>
+        <div class="trust-item"><span class="trust-icon">⚡</span> Instant Room Links</div>
+        <div class="trust-item"><span class="trust-icon">🚫</span> Zero Ads</div>
+        <div class="trust-item"><span class="trust-icon">📱</span> No App Needed</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STRIP -->
+  <div class="fstrip">
+    <div class="fstrip-inner">
+      <div class="fstrip-item"><span>🔒</span> AES-256 Encrypted</div>
+      <div class="fstrip-item"><span>🔗</span> Auto Invite Links</div>
+      <div class="fstrip-item"><span>📷</span> Instagram Sign-In</div>
+      <div class="fstrip-item"><span>⚡</span> WebRTC Peer-to-Peer</div>
+      <div class="fstrip-item"><span>✉️</span> OTP Verification</div>
+      <div class="fstrip-item"><span>🌍</span> Works on Any Device</div>
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <section class="features" id="features">
+    <div class="sec-inner">
+      <span class="sec-label">Why ToxicLabs IGVC</span>
+      <div class="sec-h">Everything private calls<br>should have.</div>
+      <div class="feat-grid">
+        <div class="feat-card"><div class="feat-icon fi-ig">🔒</div><h3>End-to-End Encrypted</h3><p>Every call is secured peer-to-peer. Nobody — not even ToxicLabs — can see or hear your conversation.</p></div>
+        <div class="feat-card"><div class="feat-icon fi-bl">🔗</div><h3>Auto Invite Links</h3><p>Your personal room link is generated the moment you log in. Share <code style="font-size:11px;color:var(--ig1)">toxiclabs.xyz/invitevc=XXXX</code> with anyone.</p></div>
+        <div class="feat-card"><div class="feat-icon fi-ig">📷</div><h3>Instagram OAuth Login</h3><p>Sign in with your real Instagram account via official Meta OAuth — trusted, instant, no extra signup.</p></div>
+        <div class="feat-card"><div class="feat-icon fi-gr">✉️</div><h3>OTP Email Verification</h3><p>Every new account and every login requires OTP verification. Beautiful email delivered straight to your inbox.</p></div>
+        <div class="feat-card"><div class="feat-icon fi-or">⚡</div><h3>Real WebRTC Calls</h3><p>Peer-to-peer WebRTC with working camera, mic, mute controls, and real-time signaling via Socket.io.</p></div>
+        <div class="feat-card"><div class="feat-icon fi-pu">🛡️</div><h3>Identity Verified Rooms</h3><p>Only authenticated users can join rooms. Your invite link + login = guaranteed identity for every participant.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how" id="how">
+    <div class="how-inner">
+      <span class="sec-label">How It Works</span>
+      <div class="sec-h">Simple as 1-2-3</div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-left"><div class="step-num">1</div><div class="step-line"></div></div>
+          <div class="step-body"><h4>Sign up with Instagram or email</h4><p>Use official Instagram OAuth or create an account with your email. OTP sent to your inbox for verification — password minimum 6 characters.</p></div>
+        </div>
+        <div class="step">
+          <div class="step-left"><div class="step-num">2</div><div class="step-line"></div></div>
+          <div class="step-body"><h4>Your room link is auto-generated</h4><p>The moment you log in, your unique room is ready. <span class="step-code">toxiclabs.xyz/invitevc=XXXX</span> is yours — share it with anyone.</p></div>
+        </div>
+        <div class="step">
+          <div class="step-left"><div class="step-num">3</div><div class="step-line"></div></div>
+          <div class="step-body"><h4>They see your invite message</h4><p>When someone clicks your link, they see <strong style="color:var(--ig1)">@yourname invited you to a secure video call</strong> and must log in to join.</p></div>
+        </div>
+        <div class="step">
+          <div class="step-left"><div class="step-num">4</div></div>
+          <div class="step-body"><h4>Start your encrypted call</h4><p>Camera, mic, mute — all working. Full WebRTC peer-to-peer connection. When you hang up, the room is gone.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INVITE DEMO -->
+  <section class="demo-sec">
+    <div class="sec-inner" style="text-align:center;margin-bottom:40px">
+      <span class="sec-label">Live Demo</span>
+      <div class="sec-h" style="margin-bottom:0">See how invite links work</div>
+    </div>
+    <div class="demo-card">
+      <div class="demo-card-top">
+        <div class="demo-av">👤</div>
+        <div class="demo-info">
+          <h3>Your Personal Room</h3>
+          <p>Auto-generated on login · Always yours</p>
+        </div>
+      </div>
+      <div class="demo-body">
+        <div class="demo-url-box">
+          <div class="demo-url-label">🔗 Your Invite Link</div>
+          <div class="demo-url-val" id="demo-url-val">toxiclabs.xyz/invitevc=K9MX2PQ</div>
+          <div class="demo-copy">
+            <button class="dcopy-btn dcopy-copy" onclick="copyDemoLink()">📋 Copy Link</button>
+            <button class="dcopy-btn dcopy-share" onclick="shareDemoLink()">↗ Share</button>
+          </div>
+        </div>
+        <div class="demo-notif">
+          <span class="notif-icon">📨</span>
+          <div class="notif-body">
+            <p><strong>@toxic_user</strong> invited you to join a secure Instagram video call 🔒</p>
+            <small>Sign in with Instagram or email to join · End-to-End Encrypted</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stats-inner">
+      <div class="stat"><div class="stat-n">256</div><div class="stat-l">AES Bit Encryption</div></div>
+      <div class="stat"><div class="stat-n">OTP</div><div class="stat-l">Every Login Verified</div></div>
+      <div class="stat"><div class="stat-n">P2P</div><div class="stat-l">Direct WebRTC</div></div>
+      <div class="stat"><div class="stat-n">∞</div><div class="stat-l">Call Duration</div></div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="hdr-logo" href="#" style="text-decoration:none"><div class="hdr-logo-icon">📷</div><div><div class="hdr-logo-text">Instagram VC</div><div class="hdr-logo-sub">Secure · E2E · by ToxicLabs</div></div></a>
+        <p>Private video calls built on Instagram identity. No tracking, no ads, no compromise. Developed by Toxic.</p>
+      </div>
+      <div class="footer-col"><h5>Product</h5><a href="#">Features</a><a href="#">Security</a><a href="#">Pricing</a><a href="#">API</a></div>
+      <div class="footer-col"><h5>Company</h5><a href="#">About</a><a href="#">Blog</a><a href="#">Careers</a><a href="#">Contact</a></div>
+      <div class="footer-col"><h5>Legal</h5><a href="#">Privacy Policy</a><a href="#">Terms of Service</a><a href="#">Cookie Policy</a><a href="#">Security</a></div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Instagram Video Call by ToxicLabs · toxiclabs.xyz · Developed by Toxic</p>
+      <div class="footer-socials">
+        <a class="fsoc" href="#">𝕏</a>
+        <a class="fsoc" href="#">📷</a>
+        <a class="fsoc" href="#">💬</a>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<!-- ════════════════════════════
+     MODALS
+════════════════════════════ -->
+
+<!-- LOGIN / REGISTER MODAL -->
+<div class="ov" id="ov-login">
+  <div class="modal">
+    <div class="modal-hd">
+      <div class="modal-hd-icon">📷</div>
+      <button class="modal-x" onclick="closeOv('login')">✕</button>
+      <h2 id="auth-title">Welcome Back</h2>
+      <p id="auth-sub">Sign in to your account</p>
+    </div>
+    <div class="modal-body">
+      <!-- Instagram -->
+      <button class="btn-ig-auth" onclick="igOAuth()">
+        <div class="ig-auth-icon">📷</div>
+        Continue with Instagram
+      </button>
+      <div class="divider">or use email</div>
+
+      <!-- LOGIN FORM -->
+      <div id="form-login">
+        <div class="fgroup" id="fg-lemail">
+          <label>Email Address</label>
+          <input type="email" id="l-email" placeholder="you@example.com" oninput="clearErr('fg-lemail')">
+          <div class="err-msg" id="err-lemail"></div>
+        </div>
+        <div class="fgroup" id="fg-lpass">
+          <label>Password</label>
+          <input type="password" id="l-pass" placeholder="Min. 6 characters" oninput="clearErr('fg-lpass')" onkeydown="if(event.key==='Enter')doLogin()">
+          <div class="err-msg" id="err-lpass"></div>
+        </div>
+        <button class="btn-form" id="btn-login" onclick="doLogin()">Log In →</button>
+        <div class="m-switch">No account? <a onclick="showForm('reg')">Sign up free</a></div>
+      </div>
+
+      <!-- REGISTER FORM -->
+      <div id="form-reg" style="display:none">
+        <div class="fgroup" id="fg-rname">
+          <label>Display Name</label>
+          <input type="text" id="r-name" placeholder="Your full name" oninput="clearErr('fg-rname')">
+          <div class="err-msg" id="err-rname"></div>
+        </div>
+        <div class="fgroup" id="fg-remail">
+          <label>Email Address</label>
+          <input type="email" id="r-email" placeholder="you@example.com" oninput="clearErr('fg-remail')">
+          <div class="err-msg" id="err-remail"></div>
+        </div>
+        <div class="fgroup" id="fg-rpass">
+          <label>Password (min. 6 characters)</label>
+          <input type="password" id="r-pass" placeholder="Create a strong password" oninput="onPassInput()" onkeydown="if(event.key==='Enter')doRegister()">
+          <div class="err-msg" id="err-rpass"></div>
+        </div>
+        <button class="btn-form" id="btn-reg" onclick="doRegister()">Create Account →</button>
+        <div class="m-switch">Already have an account? <a onclick="showForm('login')">Sign in</a></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- OTP MODAL -->
+<div class="ov" id="ov-otp">
+  <div class="modal">
+    <div class="modal-hd">
+      <div class="modal-hd-icon">✉️</div>
+      <button class="modal-x" onclick="closeOv('otp')">✕</button>
+      <h2>Verify Your Email</h2>
+      <p id="otp-sub">Enter the 6-digit code sent to your inbox</p>
+    </div>
+    <div class="modal-body">
+      <div class="otp-inputs">
+        <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" id="o0">
+        <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" id="o1">
+        <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" id="o2">
+        <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" id="o3">
+        <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" id="o4">
+        <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" id="o5">
+      </div>
+      <button class="btn-form" id="btn-otp" onclick="submitOTP()">Verify →</button>
+      <div class="otp-resend" style="margin-top:14px">
+        Didn't receive it? <a onclick="resendOTP()">Resend OTP</a>
+        <span class="otp-timer" id="otp-timer"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DASHBOARD MODAL -->
+<div class="ov" id="ov-dash">
+  <div class="modal">
+    <div class="modal-hd" style="padding:20px 20px 18px">
+      <button class="modal-x" onclick="closeOv('dash')">✕</button>
+      <div style="display:flex;align-items:center;gap:12px;text-align:left">
+        <div class="hdr-user-av" style="width:44px;height:44px;font-size:20px" id="dash-av-icon">👤</div>
+        <div>
+          <div style="font-size:16px;font-weight:900;color:#fff;letter-spacing:-.3px" id="dash-uname">User</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.65);font-weight:600" id="dash-uemail">user@email.com</div>
+        </div>
+        <div style="margin-left:auto;background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.3);font-size:10px;font-weight:800;padding:3px 8px;border-radius:6px">● LIVE</div>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="link-panel">
+        <span class="link-panel-label">🔗 Your Auto-Generated Invite Link</span>
+        <div class="link-val" id="dash-link">toxiclabs.xyz/invitevc=...</div>
+        <div class="link-btns">
+          <button class="lbtn lbtn-copy" onclick="copyMyLink()">📋 Copy Link</button>
+          <button class="lbtn lbtn-share" onclick="shareMyLink()">↗ Share</button>
+        </div>
+      </div>
+      <button class="btn-start" onclick="startMyRoom()">⚡ Start My Room</button>
+      <div class="divider">or join someone's room</div>
+      <div class="join-row">
+        <input type="text" id="join-code" placeholder="Paste room code..." maxlength="8">
+        <button onclick="joinByCode()">Join →</button>
+      </div>
+      <div style="margin-top:16px;text-align:right">
+        <a onclick="doLogout()" style="font-size:12px;color:var(--muted);cursor:pointer;font-weight:600">Log out</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- JOIN INVITE MODAL -->
+<div class="ov" id="ov-join">
+  <div class="modal">
+    <div class="modal-hd">
+      <button class="modal-x" onclick="closeOv('join')">✕</button>
+      <h2>You're Invited!</h2>
+      <p>Sign in to join the call</p>
+    </div>
+    <div class="modal-body">
+      <div class="join-invite-top">
+        <div class="ji-av">📷</div>
+        <div class="ji-from" id="ji-from">@someone</div>
+        <div class="ji-sub">invited you to a secure video call</div>
+        <div class="ji-room" id="ji-room">Room: xxxxxxxx</div>
+      </div>
+      <div class="security-note" style="margin-top:14px">
+        <span>🔒</span>
+        <span>This call is end-to-end encrypted. Sign in with Instagram or email to join and verify your identity.</span>
+      </div>
+      <button class="btn-ig-auth" onclick="igOAuth(true)">
+        <div class="ig-auth-icon">📷</div>
+        Join with Instagram
+      </button>
+      <div class="divider">or use email</div>
+      <div class="fgroup"><label>Email</label><input type="email" id="ji-email" placeholder="you@example.com"></div>
+      <div class="fgroup"><label>Password</label><input type="password" id="ji-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')joinWithEmail()"></div>
+      <button class="btn-form" onclick="joinWithEmail()">Sign In &amp; Join →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════
+     VIDEO ROOM
+════════════════════════════ -->
+<div class="room-view" id="room-view">
+  <div class="room-hdr">
+    <div class="room-hdr-l">
+      <div class="room-hdr-icon">📷</div>
+      <div class="room-hdr-info">
+        <strong>Instagram Video Call</strong>
+        <span id="room-id-lbl">Room: ...</span>
+      </div>
+    </div>
+    <div class="room-live"><div class="rld"></div> LIVE</div>
+  </div>
+
+  <div class="v-grid" id="v-grid">
+    <!-- Local tile -->
+    <div class="v-tile" id="local-tile">
+      <div class="v-placeholder" id="local-ph">
+        <div class="v-ph-av" id="local-av-txt">👤</div>
+        <div class="v-ph-name" id="local-ph-name">You (Camera Off)</div>
+      </div>
+      <video id="local-video" autoplay muted playsinline></video>
+      <div class="v-tile-label">
+        <span id="local-tile-name">You</span>
+        <span class="muted-ic" id="mic-off-ic" style="display:none">🔇</span>
+      </div>
+    </div>
+    <!-- Remote tile -->
+    <div class="v-tile" id="remote-tile">
+      <div class="v-placeholder v-tile-waiting" id="remote-ph">
+        <div style="font-size:2rem">⌛</div>
+        <p>Waiting for participant…<br>Share your invite link to invite someone.</p>
+        <button class="v-invite-link" onclick="copyRoomLink()">🔗 Copy Invite Link</button>
+      </div>
+      <video id="remote-video" autoplay playsinline></video>
+      <div class="v-tile-label" id="remote-label" style="display:none">
+        <span id="remote-tile-name">Participant</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="ctrl-bar">
+    <div class="ctrl-item" onclick="toggleMic()">
+      <div class="ctrl-circle" id="ctrl-mic">🎙️</div>
+      <div class="ctrl-lbl" id="ctrl-mic-lbl">Mute</div>
+    </div>
+    <div class="ctrl-item" onclick="toggleCam()">
+      <div class="ctrl-circle" id="ctrl-cam">📷</div>
+      <div class="ctrl-lbl" id="ctrl-cam-lbl">Camera</div>
+    </div>
+    <div class="ctrl-item" onclick="copyRoomLink()">
+      <div class="ctrl-circle">🔗</div>
+      <div class="ctrl-lbl">Invite</div>
+    </div>
+    <div class="ctrl-item" onclick="leaveRoom()">
+      <div class="ctrl-circle end-call">📵</div>
+      <div class="ctrl-lbl" style="color:var(--red)">End Call</div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ══ STATE ══
+const S = {
+  user: null,
+  roomId: null,
+  inviteFrom: null,
+  joinTarget: null,
+  otpEmail: null,
+  otpType: null,
+  joinMode: false,
+  micOn: true,
+  camOn: false,
+  localStream: null,
+  peerConn: null,
+  otpCountdown: null,
+};
+
+const socket = io();
+const API = '';
+
+// ══ INIT ══
+(async () => {
+  // Check invite URL
+  const path = window.location.pathname;
+  const params = new URLSearchParams(window.location.search);
+
+  if (path.startsWith('/join/')) {
+    const roomId = path.replace('/join/', '');
+    const from = params.get('from') || 'Someone';
+    S.joinTarget = roomId;
+    S.inviteFrom = from;
+    document.getElementById('ji-from').textContent = from;
+    document.getElementById('ji-room').textContent = 'Room: ' + roomId;
+  }
+
+  // Check logged in
+  try {
+    const r = await api('/api/me');
+    if (r.ok) setUser(r.user);
+  } catch(e) {}
+
+  if (S.joinTarget) {
+    if (S.user) {
+      joinRoom(S.joinTarget);
+    } else {
+      openOv('join');
+    }
+  }
+})();
+
+// ══ API HELPER ══
+async function api(url, body) {
+  const opts = {
+    method: body ? 'POST' : 'GET',
+    headers: { 'Content-Type': 'application/json' }
+  };
+  if (body) opts.body = JSON.stringify(body);
+  const r = await fetch(API + url, opts);
+  return r.json();
+}
+
+// ══ USER STATE ══
+function setUser(user) {
+  S.user = user;
+  document.getElementById('hdr-nav-guest').style.display = 'none';
+  document.getElementById('hdr-user').style.display = 'flex';
+  document.getElementById('hdr-name').textContent = user.name;
+  const domain = 'toxiclabs.xyz';
+  const link = `${domain}/invitevc=${user.roomId}`;
+  document.getElementById('dash-link').textContent = link;
+  document.getElementById('dash-uname').textContent = user.name;
+  document.getElementById('dash-uemail').textContent = user.email;
+  document.getElementById('demo-url-val').textContent = link;
+}
+
+function clearUser() {
+  S.user = null;
+  document.getElementById('hdr-nav-guest').style.display = 'flex';
+  document.getElementById('hdr-user').style.display = 'none';
+}
+
+// ══ FORMS ══
+function showForm(f) {
+  document.getElementById('form-login').style.display = f === 'login' ? 'block' : 'none';
+  document.getElementById('form-reg').style.display = f === 'reg' ? 'block' : 'none';
+  const title = document.getElementById('auth-title');
+  const sub = document.getElementById('auth-sub');
+  if (f === 'login') { title.textContent = 'Welcome Back'; sub.textContent = 'Sign in to your account'; }
+  else { title.textContent = 'Create Account'; sub.textContent = 'Join Instagram Video Call free'; }
+}
+
+function setErr(groupId, msgId, msg) {
+  document.getElementById(groupId).classList.add('has-error');
+  document.getElementById(msgId).textContent = msg;
+}
+
+function clearErr(groupId) {
+  document.getElementById(groupId).classList.remove('has-error');
+}
+
+function onPassInput() {
+  const v = document.getElementById('r-pass').value;
+  if (v.length > 0 && v.length < 6) {
+    setErr('fg-rpass', 'err-rpass', 'Password must be at least 6 characters');
+  } else {
+    clearErr('fg-rpass');
+  }
+}
+
+// ══ REGISTER ══
+async function doRegister() {
+  const name = document.getElementById('r-name').value.trim();
+  const email = document.getElementById('r-email').value.trim();
+  const pass = document.getElementById('r-pass').value;
+  let valid = true;
+
+  if (!name) { setErr('fg-rname', 'err-rname', 'Display name is required'); valid = false; }
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setErr('fg-remail', 'err-remail', 'Enter a valid email address'); valid = false; }
+  if (pass.length < 6) { setErr('fg-rpass', 'err-rpass', 'Password must be at least 6 characters'); valid = false; }
+  if (!valid) return;
+
+  const btn = document.getElementById('btn-reg');
+  btn.innerHTML = '<span class="spinner"></span> Creating account…';
+  btn.disabled = true;
+
+  const r = await api('/api/register', { name, email, password: pass });
+  btn.innerHTML = 'Create Account →'; btn.disabled = false;
+
+  if (!r.ok) {
+    if (r.msg.toLowerCase().includes('email')) setErr('fg-remail', 'err-remail', r.msg);
+    else toast(r.msg, 'err');
+    return;
+  }
+
+  S.otpEmail = email;
+  S.otpType = 'verify';
+  document.getElementById('otp-sub').textContent = `6-digit code sent to ${email}`;
+  closeOv('login');
+  openOv('otp');
+  startOTPTimer();
+  toast('OTP sent! Check your email 📬', 'ok');
+}
+
+// ══ LOGIN ══
+async function doLogin() {
+  const email = document.getElementById('l-email').value.trim();
+  const pass = document.getElementById('l-pass').value;
+  let valid = true;
+
+  if (!email) { setErr('fg-lemail', 'err-lemail', 'Email is required'); valid = false; }
+  if (!pass) { setErr('fg-lpass', 'err-lpass', 'Password is required'); valid = false; }
+  if (!valid) return;
+
+  const btn = document.getElementById('btn-login');
+  btn.innerHTML = '<span class="spinner"></span> Signing in…'; btn.disabled = true;
+
+  const r = await api('/api/login', { email, password: pass });
+  btn.innerHTML = 'Log In →'; btn.disabled = false;
+
+  if (!r.ok) {
+    if (r.msg.toLowerCase().includes('password')) setErr('fg-lpass', 'err-lpass', r.msg);
+    else if (r.msg.toLowerCase().includes('email') || r.msg.toLowerCase().includes('account')) setErr('fg-lemail', 'err-lemail', r.msg);
+    else toast(r.msg, 'err');
+    if (r.needsVerify) {
+      S.otpEmail = email;
+      S.otpType = 'verify';
+      document.getElementById('otp-sub').textContent = `Verify your email ${email}`;
+      closeOv('login'); openOv('otp'); startOTPTimer();
+    }
+    return;
+  }
+
+  // Need OTP
+  S.otpEmail = email;
+  S.otpType = 'login';
+  document.getElementById('otp-sub').textContent = `Login code sent to ${email}`;
+  closeOv('login'); openOv('otp'); startOTPTimer();
+  toast('Login OTP sent to your email 📬', 'ok');
+}
+
+// ══ OTP INPUTS ══
+document.querySelectorAll('.otp-digit').forEach((el, i) => {
+  el.addEventListener('input', e => {
+    e.target.value = e.target.value.replace(/[^0-9]/g, '');
+    e.target.classList.toggle('filled', e.target.value !== '');
+    if (e.target.value && i < 5) document.getElementById('o' + (i+1)).focus();
+    if (i === 5 && e.target.value) submitOTP();
+  });
+  el.addEventListener('keydown', e => {
+    if (e.key === 'Backspace' && !e.target.value && i > 0) document.getElementById('o' + (i-1)).focus();
+  });
+  el.addEventListener('paste', e => {
+    const text = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g,'').slice(0,6);
+    if (text.length === 6) {
+      [...text].forEach((c, idx) => { const inp = document.getElementById('o'+idx); inp.value = c; inp.classList.add('filled'); });
+      setTimeout(submitOTP, 100);
+    }
+    e.preventDefault();
+  });
+});
+
+function getOTPValue() {
+  return [0,1,2,3,4,5].map(i => document.getElementById('o'+i).value).join('');
+}
+
+function clearOTPInputs() {
+  [0,1,2,3,4,5].forEach(i => { const el = document.getElementById('o'+i); el.value=''; el.classList.remove('filled'); });
+  document.getElementById('o0').focus();
+}
+
+async function submitOTP() {
+  const otp = getOTPValue();
+  if (otp.length < 6) { toast('Enter the full 6-digit code', 'warn'); return; }
+
+  const btn = document.getElementById('btn-otp');
+  btn.innerHTML = '<span class="spinner"></span> Verifying…'; btn.disabled = true;
+
+  const r = await api('/api/verify-otp', { email: S.otpEmail, otp, type: S.otpType });
+  btn.innerHTML = 'Verify →'; btn.disabled = false;
+
+  if (!r.ok) {
+    clearOTPInputs();
+    toast(r.msg, 'err');
+    return;
+  }
+
+  clearOTPCountdown();
+  closeOv('otp');
+  setUser(r.user);
+  toast('Welcome, ' + r.user.name + '! 🎉', 'ok');
+
+  if (S.joinMode && S.joinTarget) {
+    joinRoom(S.joinTarget);
+    S.joinMode = false;
+  } else {
+    openOv('dash');
+  }
+}
+
+async function resendOTP() {
+  const r = await api('/api/resend-otp', { email: S.otpEmail, type: S.otpType });
+  if (r.ok) { toast('OTP resent! Check inbox 📬', 'ok'); startOTPTimer(); }
+  else toast(r.msg, 'err');
+}
+
+function startOTPTimer() {
+  clearOTPCountdown();
+  let secs = 60;
+  const el = document.getElementById('otp-timer');
+  el.textContent = ` (${secs}s)`;
+  S.otpCountdown = setInterval(() => {
+    secs--;
+    el.textContent = secs > 0 ? ` (${secs}s)` : '';
+    if (secs <= 0) clearOTPCountdown();
+  }, 1000);
+}
+
+function clearOTPCountdown() {
+  if (S.otpCountdown) { clearInterval(S.otpCountdown); S.otpCountdown = null; }
+  document.getElementById('otp-timer').textContent = '';
+}
+
+// ══ INSTAGRAM OAUTH ══
+function igOAuth(joining = false) {
+  S.joinMode = joining;
+  const CLIENT_ID = 'YOUR_IG_APP_ID';
+  const REDIRECT = encodeURIComponent(window.location.origin + '/auth/instagram/callback');
+  sessionStorage.setItem('ig_join_room', S.joinTarget || '');
+  // Real redirect:
+  window.location.href = `https://api.instagram.com/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT}&scope=user_profile&response_type=code`;
+}
+
+// ══ LOGOUT ══
+async function doLogout() {
+  await api('/api/logout', {});
+  closeOv('dash');
+  clearUser();
+  toast('Logged out successfully', 'ok');
+}
+
+// ══ JOIN ROOM FLOW ══
+async function joinRoom(roomId) {
+  closeOv('join'); closeOv('dash');
+  const r = await api('/api/room/join', { roomId });
+  if (!r.ok) { toast('Could not join room', 'err'); return; }
+  enterRoom(roomId, false);
+}
+
+async function startMyRoom() {
+  closeOv('dash');
+  const r = await api('/api/room/create', {});
+  if (!r.ok) { toast('Could not create room', 'err'); return; }
+  enterRoom(r.roomId, true);
+}
+
+async function joinByCode() {
+  const code = document.getElementById('join-code').value.trim().toUpperCase();
+  if (!code || code.length < 4) { toast('Enter a valid room code', 'warn'); return; }
+  closeOv('dash');
+  const r = await api('/api/room/join', { roomId: code });
+  if (!r.ok) { toast(r.msg || 'Could not join', 'err'); return; }
+  enterRoom(code, false);
+}
+
+async function joinWithEmail() {
+  const email = document.getElementById('ji-email').value.trim();
+  const pass = document.getElementById('ji-pass').value;
+  if (!email || !pass) { toast('Fill in your credentials', 'warn'); return; }
+
+  const r = await api('/api/login', { email, password: pass });
+  if (!r.ok) { toast(r.msg, 'err'); return; }
+
+  S.otpEmail = email;
+  S.otpType = 'login';
+  S.joinMode = true;
+  document.getElementById('otp-sub').textContent = `Login code sent to ${email}`;
+  closeOv('join'); openOv('otp'); startOTPTimer();
+  toast('OTP sent! Verify to join the call 📬', 'ok');
+}
+
+// ══ VIDEO ROOM ══
+function enterRoom(roomId, isHost) {
+  S.roomId = roomId;
+  document.getElementById('room-view').classList.add('on');
+  document.getElementById('room-id-lbl').textContent = 'Room: ' + roomId;
+  document.getElementById('local-tile-name').textContent = S.user?.name || 'You';
+  document.getElementById('local-ph-name').textContent = (S.user?.name || 'You') + ' (Camera Off)';
+
+  // Join socket room
+  socket.emit('join-room', { roomId, userName: S.user?.name || 'User' });
+
+  toast(isHost ? '⚡ Room created! Share invite to call.' : '✅ Joined room!', 'ok');
+}
+
+// Camera & Mic
+async function startMedia() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+    S.localStream = stream;
+    const vid = document.getElementById('local-video');
+    vid.srcObject = stream;
+    document.getElementById('local-tile').classList.add('cam-on');
+    S.camOn = true;
+    updateCtrl('cam', true);
+    toast('Camera & mic connected ✅', 'ok');
+    return stream;
+  } catch(e) {
+    toast('Camera/mic access denied — check browser permissions', 'warn');
+  }
+}
+
+async function toggleMic() {
+  if (!S.localStream) { await startMedia(); return; }
+  S.micOn = !S.micOn;
+  S.localStream.getAudioTracks().forEach(t => t.enabled = S.micOn);
+  updateCtrl('mic', S.micOn);
+  document.getElementById('mic-off-ic').style.display = S.micOn ? 'none' : 'inline';
+}
+
+async function toggleCam() {
+  if (!S.localStream) { await startMedia(); return; }
+  S.camOn = !S.camOn;
+  S.localStream.getVideoTracks().forEach(t => t.enabled = S.camOn);
+  document.getElementById('local-tile').classList.toggle('cam-on', S.camOn);
+  updateCtrl('cam', S.camOn);
+}
+
+function updateCtrl(type, on) {
+  if (type === 'mic') {
+    document.getElementById('ctrl-mic').textContent = on ? '🎙️' : '🔇';
+    document.getElementById('ctrl-mic').classList.toggle('muted-state', !on);
+    document.getElementById('ctrl-mic-lbl').textContent = on ? 'Mute' : 'Unmute';
+  } else {
+    document.getElementById('ctrl-cam').textContent = on ? '📷' : '🚫';
+    document.getElementById('ctrl-cam').classList.toggle('off-state', !on);
+    document.getElementById('ctrl-cam-lbl').textContent = on ? 'Camera Off' : 'Camera On';
+  }
+}
+
+function copyRoomLink() {
+  const link = `${window.location.origin}/join/${S.roomId}?from=${encodeURIComponent(S.user?.name || 'Someone')}`;
+  navigator.clipboard?.writeText(link).then(() => toast('Invite link copied! 🔗', 'ok')).catch(() => toast('Link: ' + link));
+}
+
+function leaveRoom() {
+  if (S.localStream) { S.localStream.getTracks().forEach(t => t.stop()); S.localStream = null; }
+  if (S.peerConn) { S.peerConn.close(); S.peerConn = null; }
+  document.getElementById('room-view').classList.remove('on');
+  document.getElementById('local-tile').classList.remove('cam-on');
+  document.getElementById('remote-video').style.display = 'none';
+  document.getElementById('remote-ph').style.display = 'flex';
+  document.getElementById('remote-label').style.display = 'none';
+  S.camOn = false; S.micOn = true; S.roomId = null;
+  updateCtrl('mic', true); updateCtrl('cam', false);
+  toast('Call ended', 'ok');
+}
+
+// ══ WEBRTC SIGNALING ══
+const ICE_SERVERS = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
+
+socket.on('room-peers', async (peers) => {
+  if (peers.length > 0) {
+    // We're the new joiner — create offer to first peer
+    await initPeer(peers[0], true);
+  }
+});
+
+socket.on('user-joined', async ({ socketId, userName }) => {
+  document.getElementById('remote-tile-name').textContent = userName;
+  document.getElementById('remote-label').style.display = 'flex';
+  document.getElementById('remote-ph').style.display = 'none';
+  toast(userName + ' joined the call 🎉', 'ok');
+  await initPeer(socketId, false);
+});
+
+socket.on('offer', async ({ from, offer, userName }) => {
+  if (!S.peerConn) await initPeer(from, false);
+  await S.peerConn.setRemoteDescription(new RTCSessionDescription(offer));
+  const answer = await S.peerConn.createAnswer();
+  await S.peerConn.setLocalDescription(answer);
+  socket.emit('answer', { to: from, answer });
+  document.getElementById('remote-tile-name').textContent = userName || 'Participant';
+  document.getElementById('remote-label').style.display = 'flex';
+  document.getElementById('remote-ph').style.display = 'none';
+});
+
+socket.on('answer', async ({ answer }) => {
+  await S.peerConn?.setRemoteDescription(new RTCSessionDescription(answer));
+});
+
+socket.on('ice-candidate', async ({ candidate }) => {
+  try { await S.peerConn?.addIceCandidate(new RTCIceCandidate(candidate)); } catch(e) {}
+});
+
+socket.on('user-left', ({ userName }) => {
+  document.getElementById('remote-video').srcObject = null;
+  document.getElementById('remote-video').style.display = 'none';
+  document.getElementById('remote-ph').style.display = 'flex';
+  document.getElementById('remote-label').style.display = 'none';
+  document.getElementById('remote-tile').classList.remove('cam-on');
+  toast((userName || 'Participant') + ' left the call', 'warn');
+});
+
+async function initPeer(targetSocketId, createOffer) {
+  S.peerConn = new RTCPeerConnection(ICE_SERVERS);
+
+  // Add local tracks
+  if (!S.localStream) S.localStream = await startMedia() || null;
+  if (S.localStream) {
+    S.localStream.getTracks().forEach(t => S.peerConn.addTrack(t, S.localStream));
+  }
+
+  // Remote track
+  S.peerConn.ontrack = (e) => {
+    const rv = document.getElementById('remote-video');
+    rv.srcObject = e.streams[0];
+    rv.style.display = 'block';
+    document.getElementById('remote-tile').classList.add('cam-on');
+  };
+
+  // ICE
+  S.peerConn.onicecandidate = (e) => {
+    if (e.candidate) socket.emit('ice-candidate', { to: targetSocketId, candidate: e.candidate });
+  };
+
+  if (createOffer) {
+    const offer = await S.peerConn.createOffer();
+    await S.peerConn.setLocalDescription(offer);
+    socket.emit('offer', { to: targetSocketId, offer, userName: S.user?.name });
+  }
+}
+
+// ══ OVERLAYS ══
+function openOv(id) { document.getElementById('ov-' + id).classList.add('on'); }
+function closeOv(id) { document.getElementById('ov-' + id).classList.remove('on'); }
+document.querySelectorAll('.ov').forEach(o => o.addEventListener('click', e => { if (e.target === o) o.classList.remove('on'); }));
+
+// ══ MISC ══
+function goHome() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+function scrollTo(sel) { document.querySelector(sel)?.scrollIntoView({ behavior: 'smooth' }); }
+
+function copyMyLink() {
+  if (!S.user) return;
+  const link = `${window.location.origin}/join/${S.user.roomId}?from=${encodeURIComponent(S.user.name)}`;
+  navigator.clipboard?.writeText(link).then(() => toast('Link copied! 🔗', 'ok'));
+}
+
+function shareMyLink() {
+  if (!S.user) return;
+  const link = `${window.location.origin}/join/${S.user.roomId}?from=${encodeURIComponent(S.user.name)}`;
+  if (navigator.share) navigator.share({ title: 'Join my secure video call', url: link });
+  else copyMyLink();
+}
+
+function copyDemoLink() {
+  navigator.clipboard?.writeText('https://toxiclabs.xyz/invitevc=K9MX2PQ').then(() => toast('Demo link copied!', 'ok'));
+}
+function shareDemoLink() {
+  if (navigator.share) navigator.share({ title: 'Instagram Video Call', url: 'https://toxiclabs.xyz/invitevc=K9MX2PQ' });
+  else copyDemoLink();
+}
+
+function igOAuth(joining = false) {
+  const CLIENT_ID = 'YOUR_IG_APP_ID'; // Replace with your Meta app ID
+  const REDIRECT = encodeURIComponent(window.location.origin + '/auth/instagram/callback');
+  if (S.joinTarget) sessionStorage.setItem('ig_join_room', S.joinTarget);
+  window.location.href = `https://api.instagram.com/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT}&scope=user_profile&response_type=code`;
+}
+
+let toastTimer;
+function toast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (type ? ' ' + type : '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.className = 'toast', 3200);
+}
+</script>
+</body>
+</html>
