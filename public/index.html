@@ -481,7 +481,42 @@ footer{background:#fff;border-top:1px solid var(--border);padding:52px 24px 32px
   
 
   <!-- STRIP -->
+<style>
+  /* Container styling */
+  .fstrip {
+    padding: 20px;
+    background-color: #f9f9f9; /* Halka background color */
+    border-radius: 8px;
+    width: fit-content;
+  }
 
+  /* Items ko ek ke neeche ek laane ke liye vertical alignment */
+  .fstrip-inner {
+    display: flex;
+    flex-direction: column; 
+    gap: 10px; /* Har line ke beech ka gap */
+  }
+
+  /* Text styling */
+  .fstrip-item {
+    font-family: sans-serif;
+    font-size: 14px;
+    color: #333;
+    font-weight: 500;
+  }
+</style>
+
+<div class="fstrip">
+  <div class="fstrip-inner">
+    <div class="fstrip-item">AES-256 Encrypted</div>
+    <div class="fstrip-item">Auto Invite Links</div>
+    <div class="fstrip-item">Instagram Sign-In</div>
+    <div class="fstrip-item">WebRTC Peer-to-Peer</div>
+    <div class="fstrip-item">OTP Verification</div>
+    <div class="fstrip-item">Works on Any Device</div>
+  </div>
+</div>
+  
   
   <!-- FEATURES -->
   <section class="features" id="features">
