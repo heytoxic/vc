@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Instagram Video Call — Secure & Encrypted by ToxicLabs</title>
 <meta name="description" content="End-to-end encrypted video calls powered by Instagram identity. No downloads. No ads. Just private calls.">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📷</text></svg>">
+<link rel="icon" href="ig.png">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <script src="/socket.io/socket.io.js"></script>
 <style>
@@ -388,7 +388,7 @@ footer{background:#fff;border-top:1px solid var(--border);padding:52px 24px 32px
 <!-- ══ HEADER ══ -->
 <header class="hdr">
   <a class="hdr-logo" onclick="goHome()">
-    <div class="hdr-logo-icon">📷</div>
+    <img src="ig.png" alt="Instagram Logo" style="width: 40px; height: 40px; border-radius: 8px; margin-right: 10px;">
     <div>
       <div class="hdr-logo-text">Instagram</div>
       <div class="hdr-logo-sub">Secure Video Calls · E2E</div>
@@ -401,33 +401,40 @@ footer{background:#fff;border-top:1px solid var(--border);padding:52px 24px 32px
     <button class="btn btn-ig" onclick="openOv('login');showForm('reg')">Sign Up Free</button>
   </nav>
   <div class="hdr-user" id="hdr-user">
-    <button class="btn btn-ig" onclick="openOv('dash')" style="padding:7px 16px;font-size:12px">⚡ My Room</button>
+    <button class="btn btn-ig" onclick="openOv('dash')" style="padding:7px 16px;font-size:12px">My Room</button>
     <div class="hdr-user-av" onclick="openOv('dash')" id="hdr-av">👤</div>
     <div class="hdr-user-name" id="hdr-name">User</div>
   </div>
 </header>
+  
 
 <!-- ══ HOME PAGE ══ -->
 <div class="page active" id="page-home">
 
   <!-- HERO -->
+  <div class="page active" id="page-home">
+
   <section class="hero">
     <div class="hero-inner">
       <div class="hero-brand">
-        <div class="hero-brand-icon">📷</div>
+        <img src="ig.png" alt="Instagram Icon" style="width: 24px; height: 24px; object-fit: contain; margin-right: 8px;">
         <span class="hero-brand-text">ToxicLabs · Instagram Video Call</span>
         <div class="hero-brand-dot"></div>
       </div>
+      
       <h1>Secure Video Calls<br>Built on <span class="gr">Instagram Identity</span></h1>
       <p class="hero-desc">Create a private room, share your invite link, and connect face-to-face — fully encrypted, no downloads, no nonsense.</p>
+      
       <div class="hero-cta">
-        <button class="btn btn-ig btn-hero" onclick="openOv('login');showForm('reg')">
-          📷 Start a Free Call
+        <button class="btn btn-ig btn-hero" onclick="openOv('login');showForm('reg')" style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+          <img src="ig.png" alt="" style="width: 18px; height: 18px; filter: brightness(0) invert(1);"> 
+          Start a Free Call
         </button>
         <button class="btn btn-ghost btn-hero" onclick="openOv('login');showForm('login')">
           Log In
         </button>
       </div>
+
       <div class="hero-trust">
         <div class="trust-item"><span class="trust-icon">🔒</span> End-to-End Encrypted</div>
         <div class="trust-item"><span class="trust-icon">⚡</span> Instant Room Links</div>
@@ -436,13 +443,18 @@ footer{background:#fff;border-top:1px solid var(--border);padding:52px 24px 32px
       </div>
     </div>
   </section>
+  </div>
+  
 
   <!-- STRIP -->
   <div class="fstrip">
     <div class="fstrip-inner">
       <div class="fstrip-item"><span>🔒</span> AES-256 Encrypted</div>
       <div class="fstrip-item"><span>🔗</span> Auto Invite Links</div>
-      <div class="fstrip-item"><span>📷</span> Instagram Sign-In</div>
+      <div class="fstrip-item">
+      <img src="ig.png" alt="IG" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 8px;">
+      <span>Instagram Sign-In</span>
+      </div>
       <div class="fstrip-item"><span>⚡</span> WebRTC Peer-to-Peer</div>
       <div class="fstrip-item"><span>✉️</span> OTP Verification</div>
       <div class="fstrip-item"><span>🌍</span> Works on Any Device</div>
@@ -451,19 +463,36 @@ footer{background:#fff;border-top:1px solid var(--border);padding:52px 24px 32px
 
   <!-- FEATURES -->
   <section class="features" id="features">
-    <div class="sec-inner">
-      <span class="sec-label">Why ToxicLabs IGVC</span>
-      <div class="sec-h">Everything private calls<br>should have.</div>
-      <div class="feat-grid">
-        <div class="feat-card"><div class="feat-icon fi-ig">🔒</div><h3>End-to-End Encrypted</h3><p>Every call is secured peer-to-peer. Nobody — not even ToxicLabs — can see or hear your conversation.</p></div>
-        <div class="feat-card"><div class="feat-icon fi-bl">🔗</div><h3>Auto Invite Links</h3><p>Your personal room link is generated the moment you log in. Share <code style="font-size:11px;color:var(--ig1)">toxiclabs.xyz/invitevc=XXXX</code> with anyone.</p></div>
-        <div class="feat-card"><div class="feat-icon fi-ig">📷</div><h3>Instagram OAuth Login</h3><p>Sign in with your real Instagram account via official Meta OAuth — trusted, instant, no extra signup.</p></div>
-        <div class="feat-card"><div class="feat-icon fi-gr">✉️</div><h3>OTP Email Verification</h3><p>Every new account and every login requires OTP verification. Beautiful email delivered straight to your inbox.</p></div>
-        <div class="feat-card"><div class="feat-icon fi-or">⚡</div><h3>Real WebRTC Calls</h3><p>Peer-to-peer WebRTC with working camera, mic, mute controls, and real-time signaling via Socket.io.</p></div>
-        <div class="feat-card"><div class="feat-icon fi-pu">🛡️</div><h3>Identity Verified Rooms</h3><p>Only authenticated users can join rooms. Your invite link + login = guaranteed identity for every participant.</p></div>
+  <div class="sec-inner">
+    <span class="sec-label">Why ToxicLabs IGVC</span>
+    <div class="sec-h">Everything private calls<br>should have.</div>
+    <div class="feat-grid">
+      
+      <div class="feat-card">
+        <div class="feat-icon fi-ig">
+          <img src="ig.png" alt="IG" style="width: 20px; height: 20px; filter: brightness(0) invert(1);">
+        </div>
+        <h3>End-to-End Encrypted</h3>
+        <p>Every call is secured peer-to-peer. Nobody — not even ToxicLabs — can see or hear your conversation.</p>
       </div>
+
+      <div class="feat-card"><div class="feat-icon fi-bl">🔗</div><h3>Auto Invite Links</h3><p>Your personal room link is generated the moment you log in. Share <code style="font-size:11px;color:var(--ig1)">toxiclabs.xyz/invitevc=XXXX</code> with anyone.</p></div>
+
+      <div class="feat-card">
+        <div class="feat-icon fi-ig">
+          <img src="ig.png" alt="IG" style="width: 20px; height: 20px; filter: brightness(0) invert(1);">
+        </div>
+        <h3>Instagram OAuth Login</h3>
+        <p>Sign in with your real Instagram account via official Meta OAuth — trusted, instant, no extra signup.</p>
+      </div>
+
+      <div class="feat-card"><div class="feat-icon fi-gr">✉️</div><h3>OTP Email Verification</h3><p>Every new account and every login requires OTP verification. Beautiful email delivered straight to your inbox.</p></div>
+      <div class="feat-card"><div class="feat-icon fi-or">⚡</div><h3>Real WebRTC Calls</h3><p>Peer-to-peer WebRTC with working camera, mic, mute controls, and real-time signaling via Socket.io.</p></div>
+      <div class="feat-card"><div class="feat-icon fi-pu">🛡️</div><h3>Identity Verified Rooms</h3><p>Only authenticated users can join rooms. Your invite link + login = guaranteed identity for every participant.</p></div>
     </div>
-  </section>
+  </div>
+</section>
+
 
   <!-- HOW IT WORKS -->
   <section class="how" id="how">
@@ -510,14 +539,14 @@ footer{background:#fff;border-top:1px solid var(--border);padding:52px 24px 32px
           <div class="demo-url-label">🔗 Your Invite Link</div>
           <div class="demo-url-val" id="demo-url-val">toxiclabs.xyz/invitevc=K9MX2PQ</div>
           <div class="demo-copy">
-            <button class="dcopy-btn dcopy-copy" onclick="copyDemoLink()">📋 Copy Link</button>
+            <button class="dcopy-btn dcopy-copy" onclick="copyDemoLink()">Copy Link</button>
             <button class="dcopy-btn dcopy-share" onclick="shareDemoLink()">↗ Share</button>
           </div>
         </div>
         <div class="demo-notif">
           <span class="notif-icon">📨</span>
           <div class="notif-body">
-            <p><strong>@toxic_user</strong> invited you to join a secure Instagram video call 🔒</p>
+            <p><strong>@instagram user</strong> invited you to join a secure Instagram video call 🔒</p>
             <small>Sign in with Instagram or email to join · End-to-End Encrypted</small>
           </div>
         </div>
@@ -550,7 +579,7 @@ footer{background:#fff;border-top:1px solid var(--border);padding:52px 24px 32px
       <p>© 2025 Instagram Video Call by ToxicLabs · toxiclabs.xyz · Developed by Toxic</p>
       <div class="footer-socials">
         <a class="fsoc" href="#">𝕏</a>
-        <a class="fsoc" href="#">📷</a>
+        <a class="fsoc" href="#">ig.png</a>
         <a class="fsoc" href="#">💬</a>
       </div>
     </div>
@@ -562,23 +591,26 @@ footer{background:#fff;border-top:1px solid var(--border);padding:52px 24px 32px
 ════════════════════════════ -->
 
 <!-- LOGIN / REGISTER MODAL -->
-<div class="ov" id="ov-login">
+  <div class="ov" id="ov-login">
   <div class="modal">
     <div class="modal-hd">
-      <div class="modal-hd-icon">📷</div>
+      <div class="modal-hd-icon">
+        <img src="ig.png" alt="IG" style="width: 24px; height: 24px; vertical-align: middle;">
+      </div>
       <button class="modal-x" onclick="closeOv('login')">✕</button>
       <h2 id="auth-title">Welcome Back</h2>
       <p id="auth-sub">Sign in to your account</p>
     </div>
     <div class="modal-body">
-      <!-- Instagram -->
-      <button class="btn-ig-auth" onclick="igOAuth()">
-        <div class="ig-auth-icon">📷</div>
+      <button class="btn-ig-auth" onclick="igOAuth()" style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+        <div class="ig-auth-icon">
+          <img src="ig.png" alt="IG" style="width: 18px; height: 18px; filter: brightness(0) invert(1);">
+        </div>
         Continue with Instagram
       </button>
+      
       <div class="divider">or use email</div>
 
-      <!-- LOGIN FORM -->
       <div id="form-login">
         <div class="fgroup" id="fg-lemail">
           <label>Email Address</label>
@@ -593,7 +625,8 @@ footer{background:#fff;border-top:1px solid var(--border);padding:52px 24px 32px
         <button class="btn-form" id="btn-login" onclick="doLogin()">Log In →</button>
         <div class="m-switch">No account? <a onclick="showForm('reg')">Sign up free</a></div>
       </div>
-
+      
+ 
       <!-- REGISTER FORM -->
       <div id="form-reg" style="display:none">
         <div class="fgroup" id="fg-rname">
@@ -664,11 +697,11 @@ footer{background:#fff;border-top:1px solid var(--border);padding:52px 24px 32px
         <span class="link-panel-label">🔗 Your Auto-Generated Invite Link</span>
         <div class="link-val" id="dash-link">toxiclabs.xyz/invitevc=...</div>
         <div class="link-btns">
-          <button class="lbtn lbtn-copy" onclick="copyMyLink()">📋 Copy Link</button>
+          <button class="lbtn lbtn-copy" onclick="copyMyLink()">Copy Link</button>
           <button class="lbtn lbtn-share" onclick="shareMyLink()">↗ Share</button>
         </div>
       </div>
-      <button class="btn-start" onclick="startMyRoom()">⚡ Start My Room</button>
+      <button class="btn-start" onclick="startMyRoom()">Start My Room</button>
       <div class="divider">or join someone's room</div>
       <div class="join-row">
         <input type="text" id="join-code" placeholder="Paste room code..." maxlength="8">
@@ -691,7 +724,7 @@ footer{background:#fff;border-top:1px solid var(--border);padding:52px 24px 32px
     </div>
     <div class="modal-body">
       <div class="join-invite-top">
-        <div class="ji-av">📷</div>
+        <div class="ji-av">🥀</div>
         <div class="ji-from" id="ji-from">@someone</div>
         <div class="ji-sub">invited you to a secure video call</div>
         <div class="ji-room" id="ji-room">Room: xxxxxxxx</div>
@@ -700,10 +733,14 @@ footer{background:#fff;border-top:1px solid var(--border);padding:52px 24px 32px
         <span>🔒</span>
         <span>This call is end-to-end encrypted. Sign in with Instagram or email to join and verify your identity.</span>
       </div>
-      <button class="btn-ig-auth" onclick="igOAuth(true)">
-        <div class="ig-auth-icon">📷</div>
+
+      <button class="btn-ig-auth" onclick="igOAuth(true)" style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+        <div class="ig-auth-icon">
+          <img src="ig.png" alt="IG" style="width: 18px; height: 18px; filter: brightness(0) invert(1);">
+        </div>
         Join with Instagram
       </button>
+
       <div class="divider">or use email</div>
       <div class="fgroup"><label>Email</label><input type="email" id="ji-email" placeholder="you@example.com"></div>
       <div class="fgroup"><label>Password</label><input type="password" id="ji-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')joinWithEmail()"></div>
@@ -711,6 +748,7 @@ footer{background:#fff;border-top:1px solid var(--border);padding:52px 24px 32px
     </div>
   </div>
 </div>
+      
 
 <!-- ════════════════════════════
      VIDEO ROOM
@@ -718,7 +756,9 @@ footer{background:#fff;border-top:1px solid var(--border);padding:52px 24px 32px
 <div class="room-view" id="room-view">
   <div class="room-hdr">
     <div class="room-hdr-l">
-      <div class="room-hdr-icon">📷</div>
+      <div class="room-hdr-icon">
+        <img src="ig.png" alt="IG" style="width: 20px; height: 20px; vertical-align: middle;">
+      </div>
       <div class="room-hdr-info">
         <strong>Instagram Video Call</strong>
         <span id="room-id-lbl">Room: ...</span>
@@ -728,7 +768,6 @@ footer{background:#fff;border-top:1px solid var(--border);padding:52px 24px 32px
   </div>
 
   <div class="v-grid" id="v-grid">
-    <!-- Local tile -->
     <div class="v-tile" id="local-tile">
       <div class="v-placeholder" id="local-ph">
         <div class="v-ph-av" id="local-av-txt">👤</div>
@@ -740,7 +779,7 @@ footer{background:#fff;border-top:1px solid var(--border);padding:52px 24px 32px
         <span class="muted-ic" id="mic-off-ic" style="display:none">🔇</span>
       </div>
     </div>
-    <!-- Remote tile -->
+    
     <div class="v-tile" id="remote-tile">
       <div class="v-placeholder v-tile-waiting" id="remote-ph">
         <div style="font-size:2rem">⌛</div>
@@ -760,7 +799,9 @@ footer{background:#fff;border-top:1px solid var(--border);padding:52px 24px 32px
       <div class="ctrl-lbl" id="ctrl-mic-lbl">Mute</div>
     </div>
     <div class="ctrl-item" onclick="toggleCam()">
-      <div class="ctrl-circle" id="ctrl-cam">📷</div>
+      <div class="ctrl-circle" id="ctrl-cam">
+        <img src="ig.png" alt="" style="width: 18px; height: 18px; filter: brightness(0) invert(1);">
+      </div>
       <div class="ctrl-lbl" id="ctrl-cam-lbl">Camera</div>
     </div>
     <div class="ctrl-item" onclick="copyRoomLink()">
@@ -1108,7 +1149,7 @@ function enterRoom(roomId, isHost) {
   // Join socket room
   socket.emit('join-room', { roomId, userName: S.user?.name || 'User' });
 
-  toast(isHost ? '⚡ Room created! Share invite to call.' : '✅ Joined room!', 'ok');
+  toast(isHost ? 'Room created! Share invite to call.' : 'Joined room!', 'ok');
 }
 
 // Camera & Mic
@@ -1121,7 +1162,7 @@ async function startMedia() {
     document.getElementById('local-tile').classList.add('cam-on');
     S.camOn = true;
     updateCtrl('cam', true);
-    toast('Camera & mic connected ✅', 'ok');
+    toast('Camera & mic connected', 'ok');
     return stream;
   } catch(e) {
     toast('Camera/mic access denied — check browser permissions', 'warn');
