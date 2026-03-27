@@ -481,192 +481,154 @@ footer{background:#fff;border-top:1px solid var(--border);padding:52px 24px 32px
   
 
   <!-- STRIP -->
-<style>
-  /* Infinite Marquee Scroll */
-  .marquee-wrapper {
-    overflow: hidden;
-    background: #fafafa;
-    padding: 30px 0;
-    border-bottom: 1px solid #efefef;
-    position: relative;
-    display: flex;
-    width: 100%;
+  <style>
+  :root {
+    --neon-blue: #00d2ff;
+    --neon-purple: #9d50bb;
+    --neon-pink: #f06292;
+    --dark-bg: #0a0a0b;
+    --card-bg: rgba(255, 255, 255, 0.03);
+    --border: rgba(255, 255, 255, 0.08);
   }
-  .marquee-track {
+
+  body { background-color: var(--dark-bg); color: #fff; font-family: 'Inter', sans-serif; margin: 0; }
+
+  /* 1. INFINITE AUTO-SCROLL STRIP */
+  .fstrip-container {
+    overflow: hidden;
+    background: #000;
+    padding: 20px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+  }
+  .fstrip-track {
     display: flex;
     width: fit-content;
-    animation: scroll 20s linear infinite;
-  }
-  .marquee-track:hover { animation-play-state: paused; }
-  .marquee-items {
-    display: flex;
-    gap: 15px;
-    padding-right: 15px;
+    animation: marquee-scroll 20s linear infinite;
   }
   .fstrip-item {
-    background: #fff; padding: 12px 20px; border-radius: 50px; 
-    border: 1px solid #eee; display: flex; align-items: center; gap: 10px; 
-    font-weight: 600; font-size: 14px; box-shadow: 0 4px 10px rgba(0,0,0,0.03);
-    white-space: nowrap; transition: 0.3s;
+    flex-shrink: 0;
+    width: 240px;
+    margin: 0 10px;
+    background: var(--card-bg);
+    padding: 12px 18px;
+    border-radius: 50px;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    font-size: 13px;
+    color: #eee;
+    transition: 0.3s;
   }
-  .fstrip-item:hover { transform: translateY(-3px); box-shadow: 0 8px 15px rgba(0,0,0,0.08); }
-  @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+  .fstrip-item:hover { border-color: var(--neon-blue); box-shadow: 0 0 15px rgba(0, 210, 255, 0.2); }
+  @keyframes marquee-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-  /* Premium Features Grid */
-  .feat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 30px; }
+  /* 2. NEON FEATURE CARDS */
+  .features-sec { padding: 80px 20px; max-width: 1200px; margin: 0 auto; }
+  .sec-label { color: var(--neon-blue); font-weight: 800; text-transform: uppercase; letter-spacing: 2px; font-size: 12px; display: block; margin-bottom: 10px; text-align: center; }
+  .sec-h { font-size: 36px; font-weight: 800; text-align: center; margin-bottom: 50px; letter-spacing: -1px; }
+  
+  .feat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
   .feat-card { 
-    background: #fff; padding: 30px; border-radius: 20px; border: 1px solid #efefef; 
-    box-shadow: 0 10px 30px rgba(0,0,0,0.02); transition: 0.4s; position: relative; overflow: hidden;
+    background: var(--card-bg); border: 1px solid var(--border); padding: 35px; border-radius: 24px; 
+    transition: 0.4s; backdrop-filter: blur(10px); 
   }
-  .feat-card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.06); border-color: #ddd; }
-  .feat-icon { width: 50px; height: 50px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 20px; background: #f8f9fa; }
-  .feat-card h3 { font-size: 18px; font-weight: 800; margin-bottom: 10px; }
-  .feat-card p { font-size: 14px; color: #666; line-height: 1.6; }
+  .feat-card:hover { transform: translateY(-10px); border-color: var(--neon-purple); box-shadow: 0 10px 30px rgba(157, 80, 187, 0.1); }
+  .feat-icon { width: 50px; height: 50px; border-radius: 12px; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 20px; }
+  .feat-card h3 { font-size: 20px; margin-bottom: 12px; }
+  .feat-card p { font-size: 14px; color: #999; line-height: 1.6; }
 
-  /* Gradient Stats Section */
-  .stats-premium {
-    background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
-    padding: 60px 20px; color: #fff; border-radius: 30px; margin: 40px 20px;
-    box-shadow: 0 20px 40px rgba(220, 39, 67, 0.2);
+  /* 3. STEP SYSTEM */
+  .steps-container { max-width: 800px; margin: 50px auto; padding: 0 20px; }
+  .step-box { 
+    background: rgba(255,255,255,0.02); border-left: 4px solid var(--neon-blue); 
+    padding: 25px; border-radius: 0 20px 20px 0; margin-bottom: 15px; transition: 0.3s;
   }
-  .stats-inner { display: flex; flex-wrap: wrap; justify-content: space-around; max-width: 1000px; margin: 0 auto; gap: 30px; text-align: center; }
-  .stat-n { font-size: 42px; font-weight: 900; letter-spacing: -1px; margin-bottom: 5px; }
-  .stat-l { font-size: 14px; font-weight: 600; opacity: 0.9; text-transform: uppercase; letter-spacing: 1px; }
+  .step-box:hover { background: rgba(0, 210, 255, 0.05); transform: translateX(10px); }
+  .step-num { font-weight: 900; color: var(--neon-blue); margin-right: 10px; }
 
-  /* Demo Card Glassmorphism */
-  .demo-card { 
-    background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); 
-    border: 1px solid rgba(255,255,255,0.5); border-radius: 24px; padding: 20px; 
-    box-shadow: 0 20px 50px rgba(0,0,0,0.05); max-width: 500px; margin: 0 auto; 
+  /* 4. STATS CONSOLE */
+  .stats-console { 
+    background: #000; border: 1px solid var(--border); border-radius: 30px; 
+    padding: 50px 20px; margin: 60px 20px; display: flex; justify-content: space-around; flex-wrap: wrap; gap: 30px;
   }
-  .sec-label { display: inline-block; padding: 6px 14px; background: #eee; border-radius: 50px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px; color: #555; }
-  .sec-h { font-size: 32px; font-weight: 800; letter-spacing: -1px; margin-bottom: 40px; }
+  .stat-val { font-size: 48px; font-weight: 900; background: var(--ig-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .stat-lbl { font-size: 11px; font-weight: 700; color: #555; text-transform: uppercase; letter-spacing: 1px; margin-top: 5px; }
 </style>
 
-<div class="marquee-wrapper">
-  <div class="marquee-track">
-    <div class="marquee-items">
-      <div class="fstrip-item"><span style="font-size: 18px;">🔒</span> AES-256 Encrypted</div>
-      <div class="fstrip-item"><span style="font-size: 18px;">🔗</span> Auto Invite Links</div>
-      <div class="fstrip-item"><img src="ig.png" alt="IG" style="width: 18px; border-radius: 4px;"> Instagram Sign-In</div>
-      <div class="fstrip-item"><span style="font-size: 18px;">⚡</span> Peer-to-Peer</div>
-      <div class="fstrip-item"><span style="font-size: 18px;">✉️</span> OTP Verified</div>
-      <div class="fstrip-item"><span style="font-size: 18px;">🌍</span> Any Device</div>
-    </div>
-    <div class="marquee-items">
-      <div class="fstrip-item"><span style="font-size: 18px;">🔒</span> AES-256 Encrypted</div>
-      <div class="fstrip-item"><span style="font-size: 18px;">🔗</span> Auto Invite Links</div>
-      <div class="fstrip-item"><img src="ig.png" alt="IG" style="width: 18px; border-radius: 4px;"> Instagram Sign-In</div>
-      <div class="fstrip-item"><span style="font-size: 18px;">⚡</span> Peer-to-Peer</div>
-      <div class="fstrip-item"><span style="font-size: 18px;">✉️</span> OTP Verified</div>
-      <div class="fstrip-item"><span style="font-size: 18px;">🌍</span> Any Device</div>
-    </div>
+<div class="fstrip-container">
+  <div class="fstrip-track">
+    <div class="fstrip-item"><span>🔒</span> AES-256 Encrypted</div>
+    <div class="fstrip-item"><span>🔗</span> Auto Invite Links</div>
+    <div class="fstrip-item"><img src="ig.png" width="18" style="border-radius:4px"> Instagram Sign-In</div>
+    <div class="fstrip-item"><span>⚡</span> WebRTC Peer-to-Peer</div>
+    <div class="fstrip-item"><span>✉️</span> OTP Verified</div>
+    <div class="fstrip-item"><span>🌍</span> Works on Any Device</div>
+    <div class="fstrip-item"><span>🔒</span> AES-256 Encrypted</div>
+    <div class="fstrip-item"><span>🔗</span> Auto Invite Links</div>
+    <div class="fstrip-item"><img src="ig.png" width="18" style="border-radius:4px"> Instagram Sign-In</div>
+    <div class="fstrip-item"><span>⚡</span> WebRTC Peer-to-Peer</div>
+    <div class="fstrip-item"><span>✉️</span> OTP Verified</div>
+    <div class="fstrip-item"><span>🌍</span> Works on Any Device</div>
   </div>
 </div>
 
-<section class="features" id="features" style="padding: 80px 20px; max-width: 1100px; margin: 0 auto;">
-  <div style="text-align: center;">
-    <span class="sec-label">Why ToxicLabs IGVC</span>
-    <div class="sec-h">Everything private calls<br>should have.</div>
-  </div>
+<section class="features-sec" id="features">
+  <span class="sec-label">Why ToxicLabs IGVC</span>
+  <h2 class="sec-h">Everything private calls<br>should have.</h2>
   
   <div class="feat-grid">
     <div class="feat-card">
-      <div class="feat-icon" style="background: #e0f2fe; color: #0284c7;">🔒</div>
-      <h3>End-to-End Encrypted</h3>
+      <div class="feat-icon">🔒</div>
+      <h3 style="color:var(--neon-blue)">End-to-End Encrypted</h3>
       <p>Every call is secured peer-to-peer. Nobody — not even ToxicLabs — can see or hear your conversation.</p>
     </div>
     <div class="feat-card">
-      <div class="feat-icon" style="background: #f3e8ff; color: #9333ea;">🔗</div>
-      <h3>Auto Invite Links</h3>
-      <p>Your room link is generated instantly. Share <code style="background:#f1f5f9; padding:2px 6px; border-radius:4px;">toxiclabs.xyz/invite...</code> with anyone.</p>
+      <div class="feat-icon">🔗</div>
+      <h3 style="color:var(--neon-purple)">Auto Invite Links</h3>
+      <p>Your personal room link is generated the moment you log in. Share unique codes with anyone instantly.</p>
     </div>
     <div class="feat-card">
-      <div class="feat-icon" style="background: #ffedd5; display:flex; justify-content:center; align-items:center;">
-        <img src="ig.png" alt="IG" style="width: 24px; border-radius: 6px;">
-      </div>
-      <h3>Instagram Login</h3>
-      <p>Sign in with your real Instagram account via official Meta OAuth — trusted, instant, no extra signup.</p>
-    </div>
-    <div class="feat-card">
-      <div class="feat-icon" style="background: #dcfce7; color: #16a34a;">✉️</div>
-      <h3>OTP Verification</h3>
-      <p>Every new account and login requires OTP verification. Beautiful email delivered straight to your inbox.</p>
-    </div>
-    <div class="feat-card">
-      <div class="feat-icon" style="background: #fef08a; color: #ca8a04;">⚡</div>
-      <h3>Real WebRTC Calls</h3>
-      <p>Peer-to-peer WebRTC with working camera, mic, mute controls, and real-time signaling via Socket.io.</p>
-    </div>
-    <div class="feat-card">
-      <div class="feat-icon" style="background: #ffe4e6; color: #e11d48;">🛡️</div>
-      <h3>Verified Rooms</h3>
-      <p>Only authenticated users can join rooms. Your invite link + login = guaranteed identity for every participant.</p>
+      <div class="feat-icon">✉️</div>
+      <h3 style="color:var(--neon-pink)">OTP Email Verification</h3>
+      <p>Every login requires OTP verification. Beautifully crafted secure emails delivered straight to your inbox.</p>
     </div>
   </div>
 </section>
 
-<section class="how" id="how" style="background: #fafafa; padding: 80px 20px;">
-  <div style="max-width: 800px; margin: 0 auto;">
-    <div style="text-align: center; margin-bottom: 50px;">
-      <span class="sec-label">How It Works</span>
-      <div class="sec-h">Simple as 1-2-3</div>
-    </div>
+<section class="how-sec" id="how">
+  <div class="steps-container">
+    <span class="sec-label" style="text-align:left">Process</span>
+    <h2 class="sec-h" style="text-align:left; margin-bottom:30px">Simple as 1-2-3</h2>
     
-    <div class="steps" style="display: flex; flex-direction: column; gap: 30px;">
-      <div class="step" style="display: flex; gap: 20px; background: #fff; padding: 25px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.02);">
-        <div style="width: 40px; height: 40px; background: #000; color: #fff; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-weight: 800; flex-shrink: 0;">1</div>
-        <div><h4 style="font-size: 18px; margin-bottom: 8px;">Sign up with Instagram</h4><p style="color: #666; font-size: 15px;">Use official OAuth or email. OTP sent for verification.</p></div>
-      </div>
-      <div class="step" style="display: flex; gap: 20px; background: #fff; padding: 25px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.02);">
-        <div style="width: 40px; height: 40px; background: #000; color: #fff; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-weight: 800; flex-shrink: 0;">2</div>
-        <div><h4 style="font-size: 18px; margin-bottom: 8px;">Generate your link</h4><p style="color: #666; font-size: 15px;">Your unique encrypted room is ready instantly.</p></div>
-      </div>
-      <div class="step" style="display: flex; gap: 20px; background: #fff; padding: 25px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.02);">
-        <div style="width: 40px; height: 40px; background: #000; color: #fff; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-weight: 800; flex-shrink: 0;">3</div>
-        <div><h4 style="font-size: 18px; margin-bottom: 8px;">Start secure call</h4><p style="color: #666; font-size: 15px;">Full WebRTC connection. Hang up, and the room is gone.</p></div>
-      </div>
+    <div class="step-box">
+      <h4><span class="step-num">01</span> Sign up with Instagram</h4>
+      <p style="color:#777; font-size:14px; margin-top:5px">Official OAuth login or email registration with OTP security.</p>
+    </div>
+    <div class="step-box">
+      <h4><span class="step-num">02</span> Auto-generated Room</h4>
+      <p style="color:#777; font-size:14px; margin-top:5px">Unique link created instantly: toxiclabs.xyz/invitevc=XXXX</p>
+    </div>
+    <div class="step-box">
+      <h4><span class="step-num">03</span> Start Encrypted Call</h4>
+      <p style="color:#777; font-size:14px; margin-top:5px">Full camera/mic controls with direct WebRTC P2P signaling.</p>
     </div>
   </div>
 </section>
 
-<section class="demo-sec" style="padding: 80px 20px; background: #fff;">
-  <div style="text-align: center; margin-bottom: 40px;">
-    <span class="sec-label">Live Demo</span>
-    <div class="sec-h">See how invite links work</div>
-  </div>
-  
-  <div class="demo-card">
-    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #eee;">
-      <div style="font-size: 30px; background: #f0f0f0; border-radius: 50%; padding: 10px;">👤</div>
-      <div>
-        <h3 style="font-size: 16px; margin: 0;">Your Personal Room</h3>
-        <p style="font-size: 12px; color: #888; margin: 2px 0 0 0;">Auto-generated · Always yours</p>
-      </div>
-    </div>
-    
-    <div style="background: #f8f9fa; padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px dashed #ccc;">
-      <div style="font-size: 12px; font-weight: 700; color: #555; margin-bottom: 5px;">🔗 Invite Link</div>
-      <div style="color: #0095f6; font-weight: 600; font-size: 15px; word-break: break-all;">toxiclabs.xyz/invitevc=K9MX2PQ</div>
-    </div>
-    
-    <div style="display: flex; gap: 10px;">
-      <button style="flex: 1; padding: 12px; background: #000; color: #fff; border: none; border-radius: 10px; font-weight: 600; cursor: pointer;">Copy Link</button>
-      <button style="flex: 1; padding: 12px; background: #eee; color: #000; border: none; border-radius: 10px; font-weight: 600; cursor: pointer;">↗ Share</button>
-    </div>
-  </div>
-</section>
-
-<div class="stats-premium">
-  <div class="stats-inner">
-    <div class="stat"><div class="stat-n">256</div><div class="stat-l">AES Bit Encryption</div></div>
-    <div class="stat"><div class="stat-n">OTP</div><div class="stat-l">Every Login Verified</div></div>
-    <div class="stat"><div class="stat-n">P2P</div><div class="stat-l">Direct WebRTC</div></div>
-    <div class="stat"><div class="stat-n">∞</div><div class="stat-l">Call Duration</div></div>
-  </div>
+<div class="stats-console">
+  <div class="stat-item"><div class="stat-val">256</div><div class="stat-lbl">AES BIT Encryption</div></div>
+  <div class="stat-item"><div class="stat-val">OTP</div><div class="stat-lbl">Secure Verification</div></div>
+  <div class="stat-item"><div class="stat-val">P2P</div><div class="stat-lbl">Direct WebRTC</div></div>
+  <div class="stat-item"><div class="stat-val">∞</div><div class="stat-lbl">Call Duration</div></div>
 </div>
   
-  <!-- FOOTER -->
+
+  
+  <!-- FOOTeR -->
   <footer>
   <div class="footer-grid">
     <div class="footer-brand">
