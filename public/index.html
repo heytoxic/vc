@@ -419,48 +419,27 @@ footer{background:#fff;border-top:1px solid var(--border);padding:52px 24px 32px
 <body>
 
 <!-- ══ HEADER ══ -->
-<header class="hdr" style="padding: 10px 15px; min-height: 60px;">
-  <a class="hdr-logo" onclick="goHome()" style="display: flex; align-items: center; gap: 8px; margin-left: -5px;">
-    <img src="ig.png" alt="Instagram Logo" style="width: 32px; height: 32px; border-radius: 6px;">
-    <div style="line-height: 1.1;">
-      <div class="hdr-logo-text" style="font-size: 18px; font-weight: 800; letter-spacing: -0.5px;">Instagram</div>
-      <div class="hdr-logo-sub" style="font-size: 10px; white-space: nowrap; color: #666;">Secure Video Calls · E2E</div>
+<header class="hdr" style="padding: 8px 12px; min-height: 55px; display: flex; align-items: center; justify-content: space-between; background: #fff; border-bottom: 1px solid #efefef;">
+  
+  <a class="hdr-logo" onclick="goHome()" style="display: flex; align-items: center; gap: 6px; text-decoration: none;">
+    <img src="ig.png" alt="Instagram Logo" style="width: 28px; height: 28px; border-radius: 6px; flex-shrink: 0;">
+    <div style="line-height: 1;">
+      <div class="hdr-logo-text" style="font-size: 16px; font-weight: 800; color: #000; letter-spacing: -0.5px;">Instagram</div>
+      <div class="hdr-logo-sub" style="font-size: 9px; color: #8e8e8e; white-space: nowrap;">Secure Calls</div>
     </div>
   </a>
 
-  <nav class="hdr-nav" id="hdr-nav-guest" style="gap: 10px;">
-    <a onclick="scrollTo('#features')" style="font-size: 13px;">Features</a>
-    <button class="btn btn-ghost" onclick="openOv('login');showForm('login')" style="padding: 6px 12px; font-size: 13px; height: 34px;">Log In</button>
-    <button class="btn btn-ig" onclick="openOv('login');showForm('reg')" style="padding: 6px 14px; font-size: 13px; height: 34px; border-radius: 8px;">Sign Up Free</button>
+  <nav class="hdr-nav" id="hdr-nav-guest" style="display: flex; align-items: center; gap: 6px;">
+    <button class="btn btn-ghost" onclick="openOv('login');showForm('login')" style="padding: 5px 10px; font-size: 12px; height: 32px; border: 1px solid #dbdbdb; background: transparent; border-radius: 8px; font-weight: 600; cursor: pointer;">Log In</button>
+    
+    <button class="btn btn-ig" onclick="openOv('login');showForm('reg')" style="padding: 5px 12px; font-size: 12px; height: 32px; border-radius: 8px; border: none; color: #fff; font-weight: 600; cursor: pointer; background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);">Sign Up</button>
   </nav>
 
-  <div class="hdr-user" id="hdr-user" style="gap: 8px;">
-    <button class="btn btn-ig" onclick="openOv('dash')" style="padding: 5px 12px; font-size: 11px; height: 30px;">My Room</button>
-    <div class="hdr-user-av" onclick="openOv('dash')" id="hdr-av" style="width: 28px; height: 28px; font-size: 14px;">👤</div>
+  <div class="hdr-user" id="hdr-user" style="display: none; align-items: center; gap: 8px;">
+    <button class="btn btn-ig" onclick="openOv('dash')" style="padding: 5px 10px; font-size: 11px; height: 30px; border-radius: 6px;">My Room</button>
+    <div class="hdr-user-av" onclick="openOv('dash')" id="hdr-av" style="width: 26px; height: 26px; font-size: 12px; border-radius: 50%; background: #eee; display: flex; align-items: center; justify-content: center;">👤</div>
   </div>
 </header>
-
-<style>
-  /* Header ko sleek rakhne ke liye additional CSS */
-  .hdr {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: #fff;
-    border-bottom: 1px solid #efefef;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-  }
-  .hdr-logo { cursor: pointer; }
-  .hdr-nav { display: flex; align-items: center; }
-  .btn-ig { 
-    background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
-    color: white; border: none; font-weight: 600; cursor: pointer;
-  }
-  .btn-ghost { background: transparent; border: 1px solid #dbdbdb; color: #262626; font-weight: 600; border-radius: 8px; cursor: pointer; }
-</style>
-  
   
 
 <!-- ══ HOME PAGE ══ -->
