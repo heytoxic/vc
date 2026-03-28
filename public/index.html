@@ -1006,7 +1006,7 @@ async function doRegister() {
   let valid = true;
 
   if (!name) { setErr('fg-rname', 'err-rname', 'Display name is required'); valid = false; }
-  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setErr('fg-remail', 'err-remail', 'Enter a valid email address'); valid = false; }
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setErr('fg-remail', 'err-remail', 'Enter a valid  address'); valid = false; }
   if (pass.length < 6) { setErr('fg-rpass', 'err-rpass', 'Password must be at least 6 characters'); valid = false; }
   if (!valid) return;
 
@@ -1038,7 +1038,7 @@ async function doLogin() {
   const pass = document.getElementById('l-pass').value;
   let valid = true;
 
-  if (!email) { setErr('fg-lemail', 'err-lemail', 'Email is required'); valid = false; }
+  if (!email) { setErr('fg-lemail', 'err-lemail', 'Username is required'); valid = false; }
   if (!pass) { setErr('fg-lpass', 'err-lpass', 'Password is required'); valid = false; }
   if (!valid) return;
 
