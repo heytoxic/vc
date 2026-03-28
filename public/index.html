@@ -997,70 +997,102 @@ function onPassInput() {
     clearErr('fg-rpass');
   }
 }
+// ── Username → fake email converter ──
+function usernameToEmail(raw) {
+  const clean = raw.trim().replace(/^@/, '');        // remove leading @
+  const safe  = clean.replace(/[^a-zA-Z0-9._\-]/g, '_'); // sanitize
+  return safe + '@ig.local';
+}
+
+// ── Username validator: letters, numbers, @ . _ - " allowed ──
+function validUsername(val) {
+  return val.trim().length >= 3 && /^[a-zA-Z0-9@._\-" ]+$/.test(val.trim());
+}
 
 // ══ REGISTER ══
 async function doRegister() {
-  const name = document.getElementById('r-name').value.trim();
-  const email = document.getElementById('r-email').value.trim();
-  const pass = document.getElementById('r-pass').value;
+  const name    = document.getElementById('r-name').value.trim();
+  const rawUser = document.getElementById('r-email').value.trim();
+  const pass    = document.getElementById('r-pass').value;
   let valid = true;
 
-  if (!name) { setErr('fg-rname', 'err-rname', 'Display name is required'); valid = false; }
-  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setErr('fg-remail', 'err-remail', 'Enter a valid  address'); valid = false; }
+  if (!name)    { setErr('fg-rname',  'err-rname',  'Display name is required'); valid = false; }
+  if (!rawUser) { setErr('fg-remail', 'err-remail', 'Instagram username is required'); valid = false; }
+  else if (!validUsername(rawUser)) { setErr('fg-remail', 'err-remail', 'Invalid username. Use letters, numbers, . _ @ only'); valid = false; }
   if (pass.length < 6) { setErr('fg-rpass', 'err-rpass', 'Password must be at least 6 characters'); valid = false; }
   if (!valid) return;
+
+  const email = usernameToEmail(rawUser);
 
   const btn = document.getElementById('btn-reg');
   btn.innerHTML = '<span class="spinner"></span> Creating account…';
   btn.disabled = true;
 
-  const r = await api('/api/register', { name, email, password: pass });
+  const r = await api('/api/register', { name, email, password: pass, rawUsername: rawUser });
   btn.innerHTML = 'Create Account →'; btn.disabled = false;
 
   if (!r.ok) {
-    if (r.msg.toLowerCase().includes('email')) setErr('fg-remail', 'err-remail', r.msg);
-    else toast(r.msg, 'err');
+    if (r.needsVerify) {
+      S.otpEmail = email;
+      S.otpType  = 'verify';
+      document.getElementById('otp-sub').textContent = `6-digit code sent to ${rawUser}`;
+      closeOv('login'); openOv('otp'); startOTPTimer();
+      return;
+    }
+    setErr('fg-remail', 'err-remail', r.msg);
     return;
   }
 
   S.otpEmail = email;
-  S.otpType = 'verify';
-  document.getElementById('otp-sub').textContent = `6-digit code sent to ${email}`;
+  S.otpType  = 'verify';
+  document.getElementById('otp-sub').textContent = `6-digit code sent to ${rawUser}`;
   closeOv('login');
   openOv('otp');
   startOTPTimer();
-  toast('OTP sent! Check your email 📬', 'ok');
+  toast('OTP sent! Check your Account 📬', 'ok');
 }
 
 // ══ LOGIN ══
 async function doLogin() {
-  const email = document.getElementById('l-email').value.trim();
-  const pass = document.getElementById('l-pass').value;
+  const rawUser = document.getElementById('l-email').value.trim();
+  const pass    = document.getElementById('l-pass').value;
   let valid = true;
 
-  if (!email) { setErr('fg-lemail', 'err-lemail', 'Username is required'); valid = false; }
-  if (!pass) { setErr('fg-lpass', 'err-lpass', 'Password is required'); valid = false; }
+  if (!rawUser) { setErr('fg-lemail', 'err-lemail', 'Username is required'); valid = false; }
+  else if (!validUsername(rawUser)) { setErr('fg-lemail', 'err-lemail', 'Invalid username. Use letters, numbers, . _ @ only'); valid = false; }
+  if (!pass)    { setErr('fg-lpass',  'err-lpass',  'Password is required'); valid = false; }
   if (!valid) return;
+
+  const email = usernameToEmail(rawUser);
 
   const btn = document.getElementById('btn-login');
   btn.innerHTML = '<span class="spinner"></span> Signing in…'; btn.disabled = true;
 
-  const r = await api('/api/login', { email, password: pass });
+  const r = await api('/api/login', { email, password: pass, rawUsername: rawUser });
   btn.innerHTML = 'Log In →'; btn.disabled = false;
 
   if (!r.ok) {
-    if (r.msg.toLowerCase().includes('password')) setErr('fg-lpass', 'err-lpass', r.msg);
-    else if (r.msg.toLowerCase().includes('email') || r.msg.toLowerCase().includes('account')) setErr('fg-lemail', 'err-lemail', r.msg);
-    else toast(r.msg, 'err');
     if (r.needsVerify) {
       S.otpEmail = email;
-      S.otpType = 'verify';
-      document.getElementById('otp-sub').textContent = `Verify your email ${email}`;
+      S.otpType  = 'verify';
+      document.getElementById('otp-sub').textContent = `Verify your account: ${rawUser}`;
       closeOv('login'); openOv('otp'); startOTPTimer();
+      return;
     }
+    if (r.msg.toLowerCase().includes('password')) setErr('fg-lpass',  'err-lpass',  r.msg);
+    else                                           setErr('fg-lemail', 'err-lemail', r.msg);
     return;
   }
 
+  if (r.needsOTP) {
+    S.otpEmail = email;
+    S.otpType  = 'login';
+    document.getElementById('otp-sub').textContent = `6-digit code sent to ${rawUser}`;
+    closeOv('login'); openOv('otp'); startOTPTimer();
+    toast('OTP sent! Check your Account 📬', 'ok');
+  }
+}
+  
   // Need OTP
   S.otpEmail = email;
   S.otpType = 'login';
